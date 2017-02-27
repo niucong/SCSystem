@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/item_home_code"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="1234567890123" />
+
+    <TextView
+        android:id="@+id/item_home_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="板蓝根"
+        android:maxLines="1"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:textSize="18sp"
+        android:textColor="#cc000000" />
+
+    <TextView
+        android:id="@+id/item_home_factory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textSize="18sp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/item_home_pirce"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="115.00"
+        android:textSize="18sp"
+        android:layout_marginRight="10dp"
+        android:textColor="#66ff0000" />
+
+    <TextView
+        android:id="@+id/item_home_remove"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="-"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/item_home_num"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:minWidth="20dp"
+        android:textSize="18sp"
+        android:text="100" />
+
+    <TextView
+        android:id="@+id/item_home_add"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="+"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/item_home_subPrice"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="小计：1115.00"
+        android:textSize="18sp"
+        android:textColor="#88ff0000" />
+
+    <ImageView
+        android:id="@+id/item_home_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"
+        android:src="@drawable/icon_delete" />
+
+</LinearLayout>

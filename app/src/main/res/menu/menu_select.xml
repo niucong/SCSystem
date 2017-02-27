@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_all"
+        android:title="所有"/>
+
+    <item
+        android:id="@+id/action_day"
+        android:title="今日"/>
+
+    <item
+        android:id="@+id/action_mouth"
+        android:title="当月"/>
+
+    <item
+        android:id="@+id/action_select"
+        android:title="日期段"/>
+</menu>

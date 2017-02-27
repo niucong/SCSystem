@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/item_store_code"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:text="1232456789"
+        android:maxLines="1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_store_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="板蓝根"
+        android:textColor="#cc000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_store_factory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="生产厂家"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_store_num"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:text="库存：115 售价：115.00"
+        android:maxLines="1"
+        android:textColor="#88ff0000"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/item_store_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"
+        android:src="@drawable/icon_delete" />
+
+</LinearLayout>

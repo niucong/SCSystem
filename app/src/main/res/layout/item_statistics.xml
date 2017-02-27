@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_statistics_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="板蓝根"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            android:textColor="#cc000000" />
+
+        <TextView
+            android:id="@+id/item_statistics_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2016-10-28 09:09:58" />
+
+        <ImageView
+            android:id="@+id/item_statistics_delete"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            android:padding="3dp"
+            android:src="@drawable/icon_delete" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_statistics_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1234567890"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/item_statistics_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="5" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_statistics_factory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生产厂家"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/item_statistics_paytype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="现金"
+            android:visibility="gone"
+            android:layout_marginRight="10dp"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/item_statistics_subPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#88ff0000"
+            android:textSize="16sp"
+            android:text="15" />
+    </LinearLayout>
+
+</LinearLayout>

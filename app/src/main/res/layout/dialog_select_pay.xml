@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><!--确认收货-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:id="@+id/select_pay"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:text="现金"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/select_cash"
+            android:checked="true"
+            android:textSize="18sp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="微信"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/select_wechat"
+            android:textSize="18sp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="支付宝"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/select_alipay"
+            android:textSize="18sp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="刷卡"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/select_card"
+            android:textSize="18sp"
+            android:layout_weight="1" />
+    </RadioGroup>
+
+</LinearLayout>

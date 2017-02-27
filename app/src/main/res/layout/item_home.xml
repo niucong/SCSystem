@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_home_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="板蓝根"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            android:textColor="#cc000000" />
+
+        <TextView
+            android:id="@+id/item_home_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="条形码：" />
+
+        <TextView
+            android:id="@+id/item_home_factory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="生产厂家：" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/item_home_pirce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5.00"
+                android:textColor="#66ff0000" />
+
+            <ImageView
+                android:id="@+id/item_home_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:padding="3dp"
+                android:src="@drawable/icon_delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/item_home_remove"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="-"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/item_home_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:minWidth="20dp"
+                android:textSize="18sp"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/item_home_add"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="+"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_home_subPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="小计：5.00"
+            android:textSize="16sp"
+            android:textColor="#88ff0000" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_store_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="板蓝根"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            android:textColor="#cc000000" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/item_store_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1232456789" />
+
+            <ImageView
+                android:id="@+id/item_store_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:padding="3dp"
+                android:src="@drawable/icon_delete" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_store_factory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生产厂家"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/item_store_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#88ff0000"
+            android:textSize="16sp"
+            android:text="库存：5" />
+    </LinearLayout>
+
+</LinearLayout>

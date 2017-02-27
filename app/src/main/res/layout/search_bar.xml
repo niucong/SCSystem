@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:background="@drawable/et_bg"
+    android:orientation="horizontal">
+
+    <AutoCompleteTextView
+        android:id="@+id/search_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@null"
+        android:hint="请输入条形码"
+        android:imeOptions="actionSearch"
+        android:inputType="number"
+        android:maxLength="13"
+        android:padding="5dp"
+        android:maxLines="1" />
+    <!-- 一键清除功能按钮 -->
+
+    <ImageView
+        android:id="@+id/search_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:onClick="button"
+        android:padding="5dp"
+        android:clickable="true"
+        android:src="@drawable/icon_delete"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/search_scan"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:onClick="button"
+        android:padding="5dp"
+        android:clickable="true"
+        android:src="@drawable/icon_scan" />
+</LinearLayout>

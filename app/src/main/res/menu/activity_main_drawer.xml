@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_enter"
+            android:title="添加库存" />
+        <item
+            android:id="@+id/nav_stock"
+            android:title="查看库存" />
+        <item
+            android:id="@+id/nav_enterList"
+            android:title="进货记录" />
+        <item
+            android:id="@+id/nav_statistics"
+            android:title="销售记录" />
+        <item
+            android:id="@+id/nav_destory"
+            android:title="报损处理" />
+    </group>
+
+    <item android:title="其它">
+        <menu>
+            <item
+                android:id="@+id/nav_camera"
+                android:title="设置摄像头" />
+            <item
+                android:id="@+id/nav_data"
+                android:title="导入/导出数据" />
+            <item
+                android:id="@+id/nav_help"
+                android:title="使用帮助" />
+            <item
+                android:id="@+id/nav_about"
+                android:title="关于" />
+        </menu>
+    </item>
+
+</menu>

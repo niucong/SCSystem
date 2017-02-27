@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/item_statistics_time"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="时间"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_statistics_code"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="条形码"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_statistics_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="药品名称"
+        android:textColor="#cc000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_statistics_factory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="生产厂家"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_statistics_num"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:text="进货价格"
+        android:textColor="#88ff0000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_statistics_paytype"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:text="支付宝"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/item_statistics_subPrice"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:text="进货数量"
+        android:textColor="#88ff0000"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/item_statistics_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:padding="5dp"
+        android:src="@drawable/icon_delete" />
+</LinearLayout>
