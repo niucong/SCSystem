@@ -1,24 +1,15 @@
 package com.niucong.scsystem;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.niucong.scsystem.app.App;
@@ -29,14 +20,9 @@ import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
-import com.niucong.scsystem.view.wheel.DateSelectView;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class OrderActivity extends BasicActivity {
@@ -45,6 +31,7 @@ public class OrderActivity extends BasicActivity {
     private Toolbar toolbar;
     private RecyclerView mRecyclerView;
     private TextView tv_warn;
+    private Button btn_print;
 
     List<SellRecord> mDatas;
 
@@ -66,6 +53,10 @@ public class OrderActivity extends BasicActivity {
         setSearchBar();
 
         tv_warn = (TextView) findViewById(R.id.store_warn);
+        btn_print = (Button) findViewById(R.id.store_print);
+        btn_print.setVisibility(View.VISIBLE);
+        btn_print.setOnClickListener(this);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.store_rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new StoreAdapter(mDatas));
@@ -82,6 +73,17 @@ public class OrderActivity extends BasicActivity {
         warm += "\n销售金额：" + App.app.showPrice(allPrice);
         tv_warn.setText(warm);
         mRecyclerView.requestFocus();
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
+            case R.id.store_print:
+                //打印小票  
+
+                break;
+        }
     }
 
     @Override

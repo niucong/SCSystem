@@ -81,6 +81,14 @@
                 android:text="仅显示需要进货药品"
                 android:textSize="16sp"
                 android:visibility="gone" />
+
+            <Button
+                android:text="打印\n小票"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/store_print"
+                android:visibility="gone"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <include
