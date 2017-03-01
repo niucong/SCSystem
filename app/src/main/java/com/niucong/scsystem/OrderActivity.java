@@ -1,9 +1,16 @@
 package com.niucong.scsystem;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +18,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.gprinter.aidl.GpService;
+import com.gprinter.command.EscCommand;
+import com.gprinter.command.GpCom;
+import com.gprinter.io.utils.GpUtils;
+import com.gprinter.service.GpPrintService;
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DBUtil;
 import com.niucong.scsystem.dao.DrugInfo;
@@ -24,6 +37,9 @@ import com.niucong.scsystem.view.NiftyDialogBuilder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
+
+import static com.niucong.scsystem.printer.ListViewAdapter.DEBUG_TAG;
 
 public class OrderActivity extends BasicActivity {
     private static final String TAG = "OrderActivity";
@@ -36,6 +52,31 @@ public class OrderActivity extends BasicActivity {
     List<SellRecord> mDatas;
 
     private SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private int mPrinterIndex = 0;
+    private GpService mGpService;
+    private PrinterServiceConnection conn = null;
+
+    class PrinterServiceConnection implements ServiceConnection {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            Log.i(DEBUG_TAG, "onServiceDisconnected() called");
+            mGpService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mGpService = GpService.Stub.asInterface(service);
+        }
+    }
+
+    private void connection() {
+        conn = new PrinterServiceConnection();
+        Log.i(DEBUG_TAG, "connection");
+        Intent intent = new Intent(this, GpPrintService.class);
+        bindService(intent, conn, Context.BIND_AUTO_CREATE); // bindService
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +114,8 @@ public class OrderActivity extends BasicActivity {
         warm += "\n销售金额：" + App.app.showPrice(allPrice);
         tv_warn.setText(warm);
         mRecyclerView.requestFocus();
+
+        connection();
     }
 
     @Override
@@ -81,8 +124,37 @@ public class OrderActivity extends BasicActivity {
         switch (v.getId()) {
             case R.id.store_print:
                 //打印小票  
-
+                printStick();
                 break;
+        }
+    }
+
+    private void printStick() {
+        EscCommand esc = new EscCommand();
+        esc.addPrintAndFeedLines((byte) 3);
+        // 设置打印居中
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
+
+        // 设置为倍高倍宽
+        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF, EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+        // 打印文字
+        esc.addText("Sample\n");
+        esc.addPrintAndLineFeed();
+
+        Vector<Byte> datas = esc.getCommand();
+        // 发送数据
+        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+        byte[] bytes = GpUtils.ByteTo_byte(Bytes);
+        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
+        int rel;
+        try {
+            rel = mGpService.sendEscCommand(mPrinterIndex, str);
+            GpCom.ERROR_CODE r = GpCom.ERROR_CODE.values()[rel];
+            if (r != GpCom.ERROR_CODE.SUCCESS) {
+                Toast.makeText(getApplicationContext(), GpCom.getErrorText(r), Toast.LENGTH_SHORT).show();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
