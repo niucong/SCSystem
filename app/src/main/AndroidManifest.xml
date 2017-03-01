@@ -76,6 +76,19 @@
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden"  />
 
+        <activity
+            android:name=".printer.PrinterConnectDialog"
+            android:configChanges="orientation|keyboardHidden"  />
+        <activity
+            android:name=".printer.BluetoothDeviceList"
+            android:configChanges="orientation|keyboardHidden"  />
+        <activity
+            android:name=".printer.UsbDeviceList"
+            android:configChanges="orientation|keyboardHidden"  />
+        <activity
+            android:name=".printer.PortConfigurationActivity"
+            android:configChanges="orientation|keyboardHidden"  />
+
         <service android:name="com.gprinter.service.GpPrintService"
             android:enabled="true"
             android:exported="true"
