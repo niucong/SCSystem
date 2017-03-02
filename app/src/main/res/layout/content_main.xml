@@ -34,6 +34,14 @@
             android:text="合计：0.0"
             android:textSize="20sp" />
 
+        <CheckBox
+            android:id="@+id/main_print"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="打印小票"
+            android:textSize="16sp" />
+
         <RadioGroup
             android:id="@+id/main_pay"
             android:layout_marginRight="10dp"

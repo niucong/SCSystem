@@ -31,6 +31,7 @@ import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.SellRecord;
 import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
+import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
 
@@ -123,8 +124,8 @@ public class OrderActivity extends BasicActivity {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.store_print:
-                //打印小票  
-                printStick();
+                // TODO 打印小票 sRecords
+                PrintUtil.printStick(mGpService, mDatas);
                 break;
         }
     }

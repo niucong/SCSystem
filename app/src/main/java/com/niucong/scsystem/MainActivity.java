@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -53,6 +54,7 @@ import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
 import com.niucong.scsystem.util.FileUtil;
+import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
 import com.umeng.analytics.MobclickAgent;
@@ -76,6 +78,7 @@ public class MainActivity extends BasicActivity
     private TextView tv_total, nav_total, nav_warn;
     private Spinner sp;
     private RadioGroup rg;
+    private CheckBox cb;
 
     private List<SellRecord> uRecords;
     private HomeAdapter mAdapter;
@@ -113,6 +116,7 @@ public class MainActivity extends BasicActivity
 
         setSearchBar();
 
+        cb = (CheckBox) findViewById(R.id.main_print);
         sp = (Spinner) findViewById(R.id.main_spinner);
         rg = (RadioGroup) findViewById(R.id.main_pay);
         setPayType();
@@ -254,7 +258,13 @@ public class MainActivity extends BasicActivity
                 tv_total.setText("合计：0.0");
                 Snackbar.make(mRecyclerView, "结算成功", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
                 setNavTip();
+                // TODO 弹框提示是否打印小票
+                if (cb.isChecked()) {
+                    PrintUtil.printStick(mGpService, sRecords);
+                }
+                cb.setChecked(false);
                 break;
         }
     }
