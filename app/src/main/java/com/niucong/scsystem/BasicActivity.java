@@ -7,14 +7,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -83,11 +79,9 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
                 if (str.length() > 0) {
                     iv_delete.setVisibility(View.VISIBLE);
                     iv_scan.setVisibility(View.GONE);
+
                     if (str.length() > 12) {
                         searchDrug(str);
-//                        if () {
-////                            et_search.setText("");
-//                        }
                     }
                 } else {
                     iv_delete.setVisibility(View.GONE);
@@ -96,17 +90,6 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
                 }
             }
         });
-//        et_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if (actionId == KeyEvent.ACTION_DOWN
-//                        || actionId == EditorInfo.IME_ACTION_DONE) {
-//                    if (searchDrug(et_search.getText().toString().trim())) {
-////                        et_search.setText("");
-//                    }
-//                }
-//                return false;
-//            }
-//        });
         iv_delete.setOnClickListener(new View.OnClickListener() {
 
             @Override

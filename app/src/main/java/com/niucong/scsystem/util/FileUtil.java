@@ -23,7 +23,7 @@ public class FileUtil {
     /**
      * 导出数据
      */
-    public void copyDBToSDcrad(Context c) {
+    public boolean copyDBToSDcrad(Context c) {
         String DATABASE_NAME = "shunchang";
         String oldPath = c.getDatabasePath(DATABASE_NAME).getPath();
         String newPath = SDCardPath + DATABASE_NAME;
@@ -34,13 +34,13 @@ public class FileUtil {
             File myFile = new File(newPath + ymdhms.format(new Date(proFile.lastModified())));
             proFile.renameTo(myFile);
         }
-        copyFile(oldPath, newPath + ymdhms.format(new Date()));
+        return copyFile(oldPath, newPath + ymdhms.format(new Date()));
     }
 
     /**
      * 导入数据
      */
-    public void copySDcradToDB(Context c) {
+    public boolean copySDcradToDB(Context c) {
         String DATABASE_NAME = "shunchang";
         String oldPath = SDCardPath + DATABASE_NAME;
         String newPath = c.getDatabasePath(DATABASE_NAME).getPath();
@@ -49,7 +49,7 @@ public class FileUtil {
         copyFile(oldPath, newPath);
         File proFile = new File(oldPath);
         File myFile = new File(oldPath + ymdhms.format(new Date()));
-        proFile.renameTo(myFile);
+        return proFile.renameTo(myFile);
     }
 
     /**
@@ -62,7 +62,7 @@ public class FileUtil {
      *  * @return boolean
      *  
      */
-    public static void copyFile(String oldPath, String newPath) {
+    public static boolean copyFile(String oldPath, String newPath) {
         try {
             int bytesum = 0;
             int byteread = 0;
@@ -80,10 +80,14 @@ public class FileUtil {
                     fs.write(buffer, 0, byteread);
                 }
                 inStream.close();
+                System.out.println("复制文件成功");
+                return true;
             }
+            return false;
         } catch (Exception e) {
-            System.out.println("复制单个文件操作出错");
+            System.out.println("复制文件操作出错");
             e.printStackTrace();
+            return false;
         }
     }
 }

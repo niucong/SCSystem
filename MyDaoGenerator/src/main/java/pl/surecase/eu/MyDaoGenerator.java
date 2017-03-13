@@ -15,6 +15,8 @@ public class MyDaoGenerator {
         drugInfo.addLongProperty("BarCode").primaryKey().notNull();
         drugInfo.addStringProperty("Name").notNull();
         drugInfo.addStringProperty("Factory");
+        drugInfo.addStringProperty("NamePY").notNull();
+        drugInfo.addStringProperty("NamePYF").notNull();
 
         Entity storeList = schema.addEntity("StoreList");
         storeList.setTableName("StoreList");

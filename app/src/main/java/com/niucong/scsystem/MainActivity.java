@@ -20,7 +20,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,7 +33,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -68,6 +74,7 @@ import java.util.List;
 import java.util.Vector;
 
 import static com.gprinter.service.GpPrintService.CONNECT_STATUS;
+import static com.niucong.scsystem.dao.DBUtil.getDaoSession;
 import static com.niucong.scsystem.printer.ListViewAdapter.DEBUG_TAG;
 
 public class MainActivity extends BasicActivity
@@ -128,6 +135,215 @@ public class MainActivity extends BasicActivity
         registerReceiver(mBroadcastReceiver, new IntentFilter(GpCom.ACTION_DEVICE_REAL_STATUS));
     }
 
+    @Override
+    protected void setSearchBar() {
+//        super.setSearchBar();
+        et_search = (AutoCompleteTextView) findViewById(R.id.search_et);
+        final ImageView iv_delete = (ImageView) findViewById(R.id.search_delete);
+        final ImageView iv_scan = (ImageView) findViewById(R.id.search_scan);
+
+        List<DrugInfo> list = DBUtil.getDaoSession().getDrugInfoDao().loadAll();
+        SearchAdapter searchAdapter = new SearchAdapter(MainActivity.this, list);
+        et_search.setAdapter(searchAdapter);
+//        et_search.setThreshold(2);
+
+        et_search.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String str = s.toString().trim();
+                if (str.length() > 0) {
+                    iv_delete.setVisibility(View.VISIBLE);
+                    iv_scan.setVisibility(View.GONE);
+
+                    try {
+                        Long.valueOf(str);
+                        if (str.length() > 12) {
+                            searchDrug(str);
+                        }
+                    } catch (NumberFormatException e) {
+                        // TODO
+//                        List<DrugInfo> list = DBUtil.getDaoSession().getDrugInfoDao().queryBuilder().whereOr(DrugInfoDao.Properties.Name.like("%" + str + "%"),
+//                                DrugInfoDao.Properties.NamePY.like("%" + str.toLowerCase() + "%"), DrugInfoDao.Properties.NamePYF.like("%" + str.toLowerCase() + "%")).list();
+//                        Log.i("MainActivity", "size=" + list.size());
+                    }
+                } else {
+                    iv_delete.setVisibility(View.GONE);
+                    iv_scan.setVisibility(View.VISIBLE);
+                    et_search.requestFocus();
+                }
+            }
+        });
+        iv_delete.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                iv_delete.setVisibility(View.GONE);
+                iv_scan.setVisibility(View.VISIBLE);
+                et_search.setText("");
+            }
+        });
+        iv_scan.setOnClickListener(this);
+    }
+
+    class SearchAdapter extends BaseAdapter implements Filterable {
+
+        Context context;
+        List<DrugInfo> list;
+
+        ArrayFilter mFilter;
+        ArrayList<DrugInfo> mUnfilteredData;
+
+        public SearchAdapter(Context context, List<DrugInfo> list) {
+            this.context = context;
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list == null ? 0 : list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            if (convertView == null) {
+                holder = new ViewHolder();
+                convertView = LayoutInflater.from(context).inflate(R.layout.item_search, null);
+                holder.tv_name = (TextView) convertView.findViewById(R.id.item_search_name);
+                holder.tv_factory = (TextView) convertView.findViewById(R.id.item_search_factory);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            final DrugInfo di = list.get(position);
+            holder.tv_name.setText(di.getName());
+            holder.tv_factory.setText(di.getFactory());
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchDrug("" + di.getBarCode());
+                }
+            });
+            return convertView;
+        }
+
+        class ViewHolder {
+            TextView tv_name, tv_factory;
+        }
+
+        @Override
+        public Filter getFilter() {
+            if (mFilter == null) {
+                mFilter = new ArrayFilter();
+            }
+            return mFilter;
+        }
+
+        private class ArrayFilter extends Filter {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence prefix) {
+                FilterResults results = new FilterResults();
+
+                if (mUnfilteredData == null) {
+                    mUnfilteredData = new ArrayList<DrugInfo>(list);
+                }
+
+                if (prefix == null || prefix.length() == 0) {
+                    ArrayList<DrugInfo> list = mUnfilteredData;
+                    results.values = list;
+                    results.count = list.size();
+                } else {
+                    String prefixString = prefix.toString().toLowerCase();
+
+                    ArrayList<DrugInfo> unfilteredValues = mUnfilteredData;
+                    int count = unfilteredValues.size();
+
+                    ArrayList<DrugInfo> newValues = new ArrayList<DrugInfo>(count);
+
+                    for (int i = 0; i < count; i++) {
+                        DrugInfo pc = unfilteredValues.get(i);
+                        if (pc != null) {
+                            if (pc.getName() != null && pc.getName().startsWith(prefixString)) {
+                                newValues.add(pc);
+                            } else if (pc.getNamePY() != null && pc.getNamePY().startsWith(prefixString)) {
+                                newValues.add(pc);
+                            } else if (pc.getNamePYF() != null && pc.getNamePYF().startsWith(prefixString)) {
+                                newValues.add(pc);
+                            }
+                        }
+                    }
+
+                    results.values = newValues;
+                    results.count = newValues.size();
+                }
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                //noinspection unchecked
+                list = (List<DrugInfo>) results.values;
+                if (results.count > 0) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyDataSetInvalidated();
+                }
+            }
+        }
+
+        //        @Override
+//        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            MyViewHolder holder = new MyViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.item_search, parent, false));
+//            return holder;
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+//            DrugInfo di = list.get(position);
+//            holder.tv_name.setText(di.getName());
+//            holder.tv_factory.setText(di.getFactory());
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return list.size();
+//        }
+//
+//        class MyViewHolder extends RecyclerView.ViewHolder {
+//            TextView tv_name, tv_factory;
+//
+//            public MyViewHolder(View view) {
+//                super(view);
+//                tv_name = (TextView) view.findViewById(R.id.item_search_name);
+//                tv_factory = (TextView) view.findViewById(R.id.item_search_factory);
+//            }
+//        }
+    }
+
     private void setPayType() {
         if (isTablet) {
             rg.setVisibility(View.VISIBLE);
@@ -184,7 +400,7 @@ public class MainActivity extends BasicActivity
     private void setNavTip() {
         try {
             SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-            List<SellRecord> tDatas = DBUtil.getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(ymd.parse(ymd.format(new Date())))).orderDesc(SellRecordDao.Properties.SellDate).list();
+            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(ymd.parse(ymd.format(new Date())))).orderDesc(SellRecordDao.Properties.SellDate).list();
             int total = 0;
             for (SellRecord mData : tDatas) {
                 total += mData.getPrice() * mData.getNumber();
@@ -195,7 +411,7 @@ public class MainActivity extends BasicActivity
             e.printStackTrace();
         }
 
-        List<StoreList> wDatas = DBUtil.getDaoSession().getStoreListDao().loadAll();
+        List<StoreList> wDatas = getDaoSession().getStoreListDao().loadAll();
         int warn = 0;
         for (StoreList mData : wDatas) {
             if (mData.getNumber() < mData.getWarnNumber()) {
@@ -238,15 +454,15 @@ public class MainActivity extends BasicActivity
                     sr.setPayType(payType);
                     sRecords.add(sr);
 
-                    StoreList si = DBUtil.getDaoSession().getStoreListDao().load(sr.getBarCode());
+                    StoreList si = getDaoSession().getStoreListDao().load(sr.getBarCode());
                     if (sr.getPrice() < 0) {
                         sellNum = -sellNum;
                     }
                     si.setNumber(si.getNumber() - sellNum);
                     uStores.add(si);
                 }
-                DBUtil.getDaoSession().getStoreListDao().insertOrReplaceInTx(uStores);
-                DBUtil.getDaoSession().getSellRecordDao().insertOrReplaceInTx(sRecords);
+                getDaoSession().getStoreListDao().insertOrReplaceInTx(uStores);
+                getDaoSession().getSellRecordDao().insertOrReplaceInTx(sRecords);
 
                 uRecords.clear();
                 mAdapter.notifyDataSetChanged();
@@ -278,7 +494,8 @@ public class MainActivity extends BasicActivity
             return false;
         }
         long code = Long.valueOf(result);
-        StoreList di = DBUtil.getDaoSession().getStoreListDao().load(code);
+        StoreList di = getDaoSession().getStoreListDao().load(code);
+        // TODO
         if (di != null) {
             SellRecord sr = null;
             long c = di.getBarCode();
@@ -336,7 +553,7 @@ public class MainActivity extends BasicActivity
             holder.tv_num.setText("" + sr.getNumber());
             holder.tv_subPrice.setText("小计：" + App.app.showPrice(sr.getPrice() * sr.getNumber()));
 
-            DrugInfo di = DBUtil.getDaoSession().getDrugInfoDao().load(code);
+            DrugInfo di = getDaoSession().getDrugInfoDao().load(code);
             holder.tv_name.setText(di.getName());
             holder.tv_factory.setText(di.getFactory());
 
@@ -560,12 +777,17 @@ public class MainActivity extends BasicActivity
                             new Thread() {
                                 @Override
                                 public void run() {
-                                    new FileUtil().copySDcradToDB(MainActivity.this);
+                                    final boolean flag = new FileUtil().copySDcradToDB(MainActivity.this);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Snackbar.make(mRecyclerView, "数据导入完成", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
+                                            if (flag) {
+                                                Snackbar.make(mRecyclerView, "数据导入成功", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            } else {
+                                                Snackbar.make(mRecyclerView, "数据导入失败", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            }
                                         }
                                     });
                                 }
@@ -580,12 +802,17 @@ public class MainActivity extends BasicActivity
                         new Thread() {
                             @Override
                             public void run() {
-                                new FileUtil().copyDBToSDcrad(MainActivity.this);
+                                final boolean flag = new FileUtil().copyDBToSDcrad(MainActivity.this);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Snackbar.make(mRecyclerView, "数据导出完成", Snackbar.LENGTH_LONG)
-                                                .setAction("Action", null).show();
+                                        if (flag) {
+                                            Snackbar.make(mRecyclerView, "数据导出成功", Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
+                                        } else {
+                                            Snackbar.make(mRecyclerView, "数据导出失败", Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
+                                        }
                                     }
                                 });
                             }

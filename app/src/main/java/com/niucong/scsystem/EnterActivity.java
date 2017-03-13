@@ -19,12 +19,11 @@ import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.EnterRecord;
 import com.niucong.scsystem.dao.EnterRecordDao;
 import com.niucong.scsystem.dao.StoreList;
+import com.niucong.scsystem.util.CnToSpell;
 import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class EnterActivity extends BasicActivity {
     private String TAG = "EnterActivity";
@@ -159,6 +158,8 @@ public class EnterActivity extends BasicActivity {
             di.setBarCode(Long.valueOf(str_code));
             di.setName(str_name);
             di.setFactory(str_factory);
+            di.setNamePY(CnToSpell.getPinYin(str_name));
+            di.setNamePYF(CnToSpell.getPinYinHeadChar(str_name));
 
             sl.setBarCode(Long.valueOf(str_code));
             if (TextUtils.isEmpty(str_num)) {

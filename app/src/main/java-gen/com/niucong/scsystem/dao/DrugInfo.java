@@ -10,6 +10,10 @@ public class DrugInfo {
     /** Not-null value. */
     private String Name;
     private String Factory;
+    /** Not-null value. */
+    private String NamePY;
+    /** Not-null value. */
+    private String NamePYF;
 
     public DrugInfo() {
     }
@@ -18,10 +22,12 @@ public class DrugInfo {
         this.BarCode = BarCode;
     }
 
-    public DrugInfo(long BarCode, String Name, String Factory) {
+    public DrugInfo(long BarCode, String Name, String Factory, String NamePY, String NamePYF) {
         this.BarCode = BarCode;
         this.Name = Name;
         this.Factory = Factory;
+        this.NamePY = NamePY;
+        this.NamePYF = NamePYF;
     }
 
     public long getBarCode() {
@@ -48,6 +54,26 @@ public class DrugInfo {
 
     public void setFactory(String Factory) {
         this.Factory = Factory;
+    }
+
+    /** Not-null value. */
+    public String getNamePY() {
+        return NamePY;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setNamePY(String NamePY) {
+        this.NamePY = NamePY;
+    }
+
+    /** Not-null value. */
+    public String getNamePYF() {
+        return NamePYF;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setNamePYF(String NamePYF) {
+        this.NamePYF = NamePYF;
     }
 
 }

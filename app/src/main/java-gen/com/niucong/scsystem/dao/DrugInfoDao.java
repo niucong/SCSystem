@@ -26,6 +26,8 @@ public class DrugInfoDao extends AbstractDao<DrugInfo, Long> {
         public final static Property BarCode = new Property(0, long.class, "BarCode", true, "BAR_CODE");
         public final static Property Name = new Property(1, String.class, "Name", false, "NAME");
         public final static Property Factory = new Property(2, String.class, "Factory", false, "FACTORY");
+        public final static Property NamePY = new Property(3, String.class, "NamePY", false, "NAME_PY");
+        public final static Property NamePYF = new Property(4, String.class, "NamePYF", false, "NAME_PYF");
     };
 
 
@@ -43,7 +45,9 @@ public class DrugInfoDao extends AbstractDao<DrugInfo, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'DrugInfo' (" + //
                 "'BAR_CODE' INTEGER PRIMARY KEY NOT NULL ," + // 0: BarCode
                 "'NAME' TEXT NOT NULL ," + // 1: Name
-                "'FACTORY' TEXT);"); // 2: Factory
+                "'FACTORY' TEXT," + // 2: Factory
+                "'NAME_PY' TEXT NOT NULL ," + // 3: NamePY
+                "'NAME_PYF' TEXT NOT NULL );"); // 4: NamePYF
     }
 
     /** Drops the underlying database table. */
@@ -63,6 +67,8 @@ public class DrugInfoDao extends AbstractDao<DrugInfo, Long> {
         if (Factory != null) {
             stmt.bindString(3, Factory);
         }
+        stmt.bindString(4, entity.getNamePY());
+        stmt.bindString(5, entity.getNamePYF());
     }
 
     /** @inheritdoc */
@@ -77,7 +83,9 @@ public class DrugInfoDao extends AbstractDao<DrugInfo, Long> {
         DrugInfo entity = new DrugInfo( //
             cursor.getLong(offset + 0), // BarCode
             cursor.getString(offset + 1), // Name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // Factory
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // Factory
+            cursor.getString(offset + 3), // NamePY
+            cursor.getString(offset + 4) // NamePYF
         );
         return entity;
     }
@@ -88,6 +96,8 @@ public class DrugInfoDao extends AbstractDao<DrugInfo, Long> {
         entity.setBarCode(cursor.getLong(offset + 0));
         entity.setName(cursor.getString(offset + 1));
         entity.setFactory(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setNamePY(cursor.getString(offset + 3));
+        entity.setNamePYF(cursor.getString(offset + 4));
      }
     
     /** @inheritdoc */
