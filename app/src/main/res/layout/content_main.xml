@@ -39,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
+            android:visibility="gone"
             android:text="打印小票"
             android:textSize="16sp" />
 

@@ -22,17 +22,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DBUtil;
 import com.niucong.scsystem.dao.DrugInfo;
-import com.niucong.scsystem.dao.EnterRecord;
-import com.niucong.scsystem.dao.EnterRecordDao;
 import com.niucong.scsystem.dao.SellRecord;
 import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
-import com.niucong.scsystem.dao.StoreListDao;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
 import com.niucong.scsystem.view.wheel.DateSelectView;
@@ -110,7 +106,23 @@ public class StatisticsActivity extends BasicActivity {
 
     private void showToday() {
         try {
-            selectData(ymd.parse(ymd.format(new Date())), new Date());
+            String ms = ymd.format(new Date());
+            int mHourOfDay = App.app.share.getIntMessage("SC", "hourOfDay", 0);
+            int mMinute = App.app.share.getIntMessage("SC", "minute", 0);
+            if (mHourOfDay < 10) {
+                ms += " 0" + mHourOfDay;
+            } else {
+                ms += " " + mHourOfDay;
+            }
+            if (mMinute < 10) {
+                ms += ":0" + mMinute;
+            } else {
+                ms += ":" + mMinute;
+            }
+            ms += ":00";
+            Date ed = ymdhms.parse(ms);// 今天结账时间
+            Date sd = new Date(ed.getTime() - 24 * 60 * 60 * 1000);// 昨天结账时间
+            selectData(sd, ed);
         } catch (ParseException e) {
             mDatas = new ArrayList<>();
         }

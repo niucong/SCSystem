@@ -1,5 +1,7 @@
 package com.niucong.scsystem;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -43,6 +45,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.gprinter.aidl.GpService;
@@ -69,11 +72,13 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
 import static com.gprinter.service.GpPrintService.CONNECT_STATUS;
+import static com.niucong.scsystem.app.App.app;
 import static com.niucong.scsystem.dao.DBUtil.getDaoSession;
 import static com.niucong.scsystem.printer.ListViewAdapter.DEBUG_TAG;
 
@@ -82,7 +87,7 @@ public class MainActivity extends BasicActivity
     private String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
-    private TextView tv_total, nav_total, nav_warn;
+    private TextView tv_total, nav_total, nav_warn, nav_time;
     private Spinner sp;
     private RadioGroup rg;
     private CheckBox cb;
@@ -91,6 +96,8 @@ public class MainActivity extends BasicActivity
     private HomeAdapter mAdapter;
 
     private int payType = 0;
+
+    int mHourOfDay, mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +121,22 @@ public class MainActivity extends BasicActivity
         nav_total = (TextView) headerView.findViewById(R.id.nav_total);
         nav_warn = (TextView) headerView.findViewById(R.id.nav_warn);
 
+        MenuItem nav_time = navigationView.getMenu().findItem(R.id.nav_time);
+        mHourOfDay = App.app.share.getIntMessage("SC", "hourOfDay", 0);
+        mMinute = App.app.share.getIntMessage("SC", "minute", 0);
+        String tStr = "设置对账时间（";
+        if (mHourOfDay < 10) {
+            tStr += "0" + mHourOfDay;
+        } else {
+            tStr += mHourOfDay;
+        }
+        if (mMinute < 10) {
+            tStr += "：0" + mMinute;
+        } else {
+            tStr += "：" + mMinute;
+        }
+        nav_time.setTitle(tStr + "）");
+
         uRecords = new ArrayList<>();
         mRecyclerView = (RecyclerView) findViewById(R.id.main_rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -124,6 +147,7 @@ public class MainActivity extends BasicActivity
         setSearchBar();
 
         cb = (CheckBox) findViewById(R.id.main_print);
+        cb.setVisibility(View.VISIBLE);
         sp = (Spinner) findViewById(R.id.main_spinner);
         rg = (RadioGroup) findViewById(R.id.main_pay);
         setPayType();
@@ -400,13 +424,28 @@ public class MainActivity extends BasicActivity
     private void setNavTip() {
         try {
             SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(ymd.parse(ymd.format(new Date())))).orderDesc(SellRecordDao.Properties.SellDate).list();
+            SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String ms = ymd.format(new Date());
+            if (mHourOfDay < 10) {
+                ms += " 0" + mHourOfDay;
+            } else {
+                ms += " " + mHourOfDay;
+            }
+            if (mMinute < 10) {
+                ms += ":0" + mMinute;
+            } else {
+                ms += ":" + mMinute;
+            }
+            ms += ":00";
+            Date ed = ymdhms.parse(ms);// 今天结账时间
+            Date sd = new Date(ed.getTime() - 24 * 60 * 60 * 1000);// 昨天结账时间
+            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(sd), SellRecordDao.Properties.SellDate.le(ed)).orderDesc(SellRecordDao.Properties.SellDate).list();
             int total = 0;
             for (SellRecord mData : tDatas) {
                 total += mData.getPrice() * mData.getNumber();
             }
             Log.d(TAG, "setNavTip total=" + total);
-            nav_total.setText("今日销售额：" + App.app.showPrice(total));
+            nav_total.setText("今日销售额：" + app.showPrice(total));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -534,7 +573,7 @@ public class MainActivity extends BasicActivity
         for (SellRecord di : uRecords) {
             total += di.getPrice() * di.getNumber();
         }
-        tv_total.setText("合计：" + App.app.showPrice(total));
+        tv_total.setText("合计：" + app.showPrice(total));
     }
 
     class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> {
@@ -549,9 +588,9 @@ public class MainActivity extends BasicActivity
             final SellRecord sr = uRecords.get(position);
             final long code = sr.getBarCode();
             holder.tv_code.setText("" + code);
-            holder.tv_price.setText(App.app.showPrice(sr.getPrice()));
+            holder.tv_price.setText(app.showPrice(sr.getPrice()));
             holder.tv_num.setText("" + sr.getNumber());
-            holder.tv_subPrice.setText("小计：" + App.app.showPrice(sr.getPrice() * sr.getNumber()));
+            holder.tv_subPrice.setText("小计：" + app.showPrice(sr.getPrice() * sr.getNumber()));
 
             DrugInfo di = getDaoSession().getDrugInfoDao().load(code);
             holder.tv_name.setText(di.getName());
@@ -669,7 +708,7 @@ public class MainActivity extends BasicActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(final MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_enter) {// 添加库存
@@ -692,10 +731,36 @@ public class MainActivity extends BasicActivity
                 intent.putExtra(CONNECT_STATUS, state);
                 this.startActivity(intent);
             }
-        } else if (id == R.id.nav_camera) {// 设置摄像头
-            settingDialog(0);
+        } else if (id == R.id.nav_time) {// 设置对账时间
+            Calendar time = Calendar.getInstance();
+            Dialog timeDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    mHourOfDay = hourOfDay;
+                    mMinute = minute;
+                    String tStr = "设置对账时间（";
+                    if (hourOfDay < 10) {
+                        tStr += "0" + hourOfDay;
+                    } else {
+                        tStr += hourOfDay;
+                    }
+                    if (minute < 10) {
+                        tStr += "：0" + minute;
+                    } else {
+                        tStr += "：" + minute;
+                    }
+                    item.setTitle(tStr + "）");
+                    app.share.saveIntMessage("SC", "hourOfDay", hourOfDay);
+                    app.share.saveIntMessage("SC", "minute", minute);
+                }
+            }, mHourOfDay, mMinute, true);
+            timeDialog.setTitle("设置每天对账时间");
+            timeDialog.show();
         } else if (id == R.id.nav_data) {// 导入/导出数据
             settingDialog(1);
+        } else if (id == R.id.nav_camera) {// 设置摄像头
+            settingDialog(0);
         } else if (id == R.id.nav_help) {// 使用帮助
             startActivity(new Intent(this, WebActivity.class));
         } else if (id == R.id.nav_about) {// 关于
@@ -722,7 +787,7 @@ public class MainActivity extends BasicActivity
 
         if (type == 0) {
             submitDia.withTitle("设置扫码摄像头");
-            if (App.app.share.getIntMessage("SC", "CameraId", 0) == 0) {
+            if (app.share.getIntMessage("SC", "CameraId", 0) == 0) {
                 rb1.setChecked(true);
             } else {
                 rb2.setChecked(true);
@@ -760,11 +825,11 @@ public class MainActivity extends BasicActivity
             public void onClick(View v) {
                 if (type == 0) {
                     if (rb1.isChecked()) {
-                        App.app.share.saveIntMessage("SC", "CameraId", 0);
+                        app.share.saveIntMessage("SC", "CameraId", 0);
                         Snackbar.make(mRecyclerView, "已切换到后置摄像头", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     } else {
-                        App.app.share.saveIntMessage("SC", "CameraId", 1);
+                        app.share.saveIntMessage("SC", "CameraId", 1);
                         Snackbar.make(mRecyclerView, "已切换到前置摄像头", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
