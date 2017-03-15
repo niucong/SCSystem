@@ -62,6 +62,7 @@ import com.niucong.scsystem.dao.SellRecord;
 import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
+import com.niucong.scsystem.util.CnToSpell;
 import com.niucong.scsystem.util.FileUtil;
 import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
@@ -721,7 +722,7 @@ public class MainActivity extends BasicActivity
             startActivity(new Intent(this, StatisticsActivity.class));
         } else if (id == R.id.nav_destory) {// 报损处理(自用、损坏或过期、退还商家)
             startActivity(new Intent(this, DestoryActivity.class));
-        } else if (id == R.id.nav_camera) {// 连接打印机
+        } else if (id == R.id.nav_printer) {// 连接打印机
             if (mGpService == null) {
                 Toast.makeText(this, "Print Service is not start, please check it", Toast.LENGTH_SHORT).show();
             } else {
@@ -760,6 +761,7 @@ public class MainActivity extends BasicActivity
         } else if (id == R.id.nav_data) {// 导入/导出数据
             settingDialog(1);
         } else if (id == R.id.nav_camera) {// 设置摄像头
+            Log.d("MainActivity", "" + Long.valueOf("999999999999999999") + CnToSpell.getPinYinHeadChar("为、V1"));
             settingDialog(0);
         } else if (id == R.id.nav_help) {// 使用帮助
             startActivity(new Intent(this, WebActivity.class));

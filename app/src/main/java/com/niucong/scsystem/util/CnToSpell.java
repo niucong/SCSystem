@@ -35,20 +35,20 @@ public class CnToSpell {
         return sb.toString();
     }
 
-    /**
-     * 获取汉字字符串的第一个字母    
-     */
-    public static String getPinYinFirstLetter(String str) {
-        sb.setLength(0);
-        char c = str.charAt(0);
-        String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(c);
-        if (pinyinArray != null) {
-            sb.append(pinyinArray[0].charAt(0));
-        } else {
-            sb.append(c);
-        }
-        return sb.toString();
-    }
+//    /**
+//     * 获取汉字字符串的第一个字母    
+//     */
+//    public static String getPinYinFirstLetter(String str) {
+//        sb.setLength(0);
+//        char c = str.charAt(0);
+//        String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(c);
+//        if (pinyinArray != null) {
+//            sb.append(pinyinArray[0].charAt(0));
+//        } else {
+//            sb.append(c);
+//        }
+//        return sb.toString();
+//    }
 
     /**
      * 获取汉字字符串的汉语拼音，英文字符不变 

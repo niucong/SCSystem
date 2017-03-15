@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DBUtil;
 import com.niucong.scsystem.dao.DrugInfo;
+import com.niucong.scsystem.dao.DrugInfoDao;
 import com.niucong.scsystem.dao.EnterRecord;
 import com.niucong.scsystem.dao.EnterRecordDao;
 import com.niucong.scsystem.dao.StoreList;
@@ -24,6 +25,8 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.niucong.scsystem.dao.DBUtil.getDaoSession;
 
 public class EnterActivity extends BasicActivity {
     private String TAG = "EnterActivity";
@@ -127,22 +130,139 @@ public class EnterActivity extends BasicActivity {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.enter_btn:
-                addDrugInfo();
-                break;
+                String str_code = et_code.getText().toString();
+                String str_name = et_name.getText().toString();
+                String str_factory = et_factory.getText().toString();
+                String str_warn = et_warn.getText().toString();
+                String str_num = et_num.getText().toString();
+                String str_price_input = et_price_input.getText().toString();
+                String str_price = et_price.getText().toString();
+                Log.d(TAG, "onClick str_code=" + str_code + ",str_name=" + str_name + ",str_factory=" + str_factory + ",str_num=" + str_num + ",str_price_input=" + str_price_input + ",str_price=" + str_price);
 
+                if (TextUtils.isEmpty(str_name)) {
+                    Snackbar.make(btn_send, "药品名称不能为空", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                } else if (TextUtils.isEmpty(str_code)) {
+                    try {
+                        di = DBUtil.getDaoSession().getDrugInfoDao().queryBuilder().where(DrugInfoDao.Properties.Name.eq(str_name)).list().get(0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (di != null) {
+                        addDrugInfo("" + di.getBarCode(), str_name, str_factory, str_warn, str_num, str_price_input, str_price);
+                        return;
+                    } else {
+                        getMyCode(str_code, str_name, str_factory, str_warn, str_num, str_price_input, str_price);
+                        return;
+                    }
+//                    } else if (er.getPrice() <= 0) {
+//                        DBUtil.getDaoSession().getDrugInfoDao().insertOrReplace(di);
+//                        Snackbar.make(btn_send, "进货价格必须大于0", Snackbar.LENGTH_LONG)
+//                                .setAction("Action", null).show();
+//                        return;
+                }
+                addDrugInfo(str_code, str_name, str_factory, str_warn, str_num, str_price_input, str_price);
+                break;
         }
     }
 
-    private void addDrugInfo() {
-        String str_code = et_code.getText().toString();
-        String str_name = et_name.getText().toString();
-        String str_factory = et_factory.getText().toString();
-        String str_warn = et_warn.getText().toString();
-        String str_num = et_num.getText().toString();
-        String str_price_input = et_price_input.getText().toString();
-        String str_price = et_price.getText().toString();
-        Log.d(TAG, "addDrugInfo str_code=" + str_code + ",str_name=" + str_name + ",str_factory=" + str_factory + ",str_num=" + str_num + ",str_price_input=" + str_price_input + ",str_price=" + str_price);
+    /**
+     * 生成自定义条形码
+     *
+     * @param str_code
+     * @param str_name
+     * @param str_factory
+     * @param str_warn
+     * @param str_num
+     * @param str_price_input
+     * @param str_price
+     */
+    private void getMyCode(String str_code, String str_name, String str_factory, String str_warn, String str_num, String str_price_input, String str_price) {
+        String pyNF = CnToSpell.getPinYinHeadChar(str_name).toLowerCase();
+        if (TextUtils.isEmpty(pyNF)) {
+            Snackbar.make(btn_send, "药品名称输入错误", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            return;
+        }
+        String pyPF = null;
+        if (!TextUtils.isEmpty(str_factory)) {
+            pyPF = CnToSpell.getPinYinHeadChar(str_factory).toLowerCase();
+        }
+        Log.i(TAG, "getMyCode pyNF=" + pyNF + ",pyPF=" + pyPF);
+        String py = "";
+        int ipyny = pyNF.length();
+        if (ipyny > 3) {
+            py += pyNF.substring(0, 4);
+        } else if (ipyny == 3) {
+            py += pyNF + "0";
+        } else if (ipyny == 2) {
+            py += pyNF + "00";
+        } else if (ipyny == 1) {
+            py += pyNF + "000";
+        }
+        if (TextUtils.isEmpty(pyPF)) {
+            py += "000";
+        } else {
+            int ipypy = pyPF.length();
+            if (ipypy > 2) {
+                py += pyPF.substring(0, 3);
+            } else if (ipyny == 2) {
+                py += pyPF + "0";
+            } else if (ipypy == 1) {
+                py += pyPF + "00";
+            }
+        }
+        Log.i(TAG, "getMyCode py=" + py);
+        String tempCode = "99";
+        for (int i = 0; i < py.length(); i++) {
+            char c = py.charAt(i);
+            for (int j = 0; j < pys.length; j++) {
+                if (pys[j].equals("" + c)) {
+                    tempCode += pycodes[j];
+                    break;
+                }
+            }
+        }
+        tempCode += "0";
+        Log.i(TAG, "getMyCode tempCode=" + tempCode);
+        addDrugInfo("" + getRepeatCode(Long.valueOf(tempCode)), str_name, str_factory, str_warn, str_num, str_price_input, str_price);
+    }
 
+    /**
+     * 编码去重
+     *
+     * @param tempCode
+     * @return
+     */
+    private long getRepeatCode(long tempCode) {
+        Log.i("", "getRepeatCode tempCode=" + tempCode);
+        di = getDaoSession().getDrugInfoDao().load(tempCode);
+        if (di != null) {
+            di = null;
+            return getRepeatCode(tempCode + 1);
+        }
+        return tempCode;
+    }
+
+    private String[] pys = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0",
+            "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    private String[] pycodes = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
+            "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36"};
+
+    /**
+     * 保存药品
+     *
+     * @param str_code
+     * @param str_name
+     * @param str_factory
+     * @param str_warn
+     * @param str_num
+     * @param str_price_input
+     * @param str_price
+     */
+    private void addDrugInfo(String str_code, String str_name, String str_factory, String str_warn, String str_num, String str_price_input, String str_price) {
+        Log.d(TAG, "addDrugInfo str_code=" + str_code + ",str_name=" + str_name + ",str_factory=" + str_factory + ",str_num=" + str_num + ",str_price_input=" + str_price_input + ",str_price=" + str_price);
         if (di == null) {
             di = new DrugInfo();
         }
@@ -173,59 +293,34 @@ public class EnterActivity extends BasicActivity {
             sl.setWarnNumber(Integer.valueOf(str_warn));
             sl.setPrice(App.app.savePrice(str_price));
 
+            if (sl.getPrice() <= 0) {
+                getDaoSession().getDrugInfoDao().insertOrReplace(di);
+                Snackbar.make(btn_send, "销售价格必须大于0", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                return;
+            }
+
             er.setBarCode(Long.valueOf(str_code));
             er.setNumber(num);
             er.setPrice(App.app.savePrice(str_price_input));
             er.setEnterDate(new Date());
 
-            if (TextUtils.isEmpty(str_name)) {
-                Snackbar.make(btn_send, "药品名称不能为空", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                return;
-            } else if (di.getBarCode() < 1) {
-                Snackbar.make(btn_send, "条形码输入错误", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                return;
-            } else if (er.getPrice() <= 0) {
-//                DBUtil.getDaoSession().getDrugInfoDao().insertOrReplace(di);
-//                Snackbar.make(btn_send, "进货价格必须大于0", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//                return;
-            } else if (sl.getPrice() <= 0) {
-                DBUtil.getDaoSession().getDrugInfoDao().insertOrReplace(di);
-                Snackbar.make(btn_send, "销售价格必须大于0", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                return;
-            }
         } catch (Exception e) {
             Snackbar.make(btn_send, "药品信息输入错误", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return;
         }
 
-
         Log.d(TAG, "addDrugInfo 开始入库");
-        DBUtil.getDaoSession().getDrugInfoDao().insertOrReplace(di);
-        DBUtil.getDaoSession().getStoreListDao().insertOrReplace(sl);
+        getDaoSession().getDrugInfoDao().insertOrReplace(di);
+        getDaoSession().getStoreListDao().insertOrReplace(sl);
         if (er.getNumber() > 0) {
-            DBUtil.getDaoSession().getEnterRecordDao().insertOrReplace(er);
+            getDaoSession().getEnterRecordDao().insertOrReplace(er);
         }
         clearInput();
         et_search.requestFocus();
         Snackbar.make(btn_send, "入库成功", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-
-//        String[] arr = App.app.share.getBarCodes();
-//        boolean flag = false;
-//        for (String s : arr) {
-//            if (str_code.equals(s)) {
-//                flag = true;
-//                break;
-//            }
-//        }
-//        if (!flag) {
-//            App.app.share.saveBarCode(str_code);
-//        }
     }
 
     @Override
@@ -237,10 +332,10 @@ public class EnterActivity extends BasicActivity {
             return false;
         }
         clearInput();
-        di = DBUtil.getDaoSession().getDrugInfoDao().load(Long.valueOf(result));
-        sl = DBUtil.getDaoSession().getStoreListDao().load(Long.valueOf(result));
+        di = getDaoSession().getDrugInfoDao().load(Long.valueOf(result));
+        sl = getDaoSession().getStoreListDao().load(Long.valueOf(result));
         try {
-            er = DBUtil.getDaoSession().getEnterRecordDao().queryBuilder().where(EnterRecordDao.Properties.BarCode.eq(result)).orderDesc(EnterRecordDao.Properties.EnterDate).list().get(0);
+            er = getDaoSession().getEnterRecordDao().queryBuilder().where(EnterRecordDao.Properties.BarCode.eq(result)).orderDesc(EnterRecordDao.Properties.EnterDate).list().get(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
