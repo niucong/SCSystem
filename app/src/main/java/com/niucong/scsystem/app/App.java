@@ -2,7 +2,10 @@ package com.niucong.scsystem.app;
 
 import android.app.Application;
 
+import com.niucong.scsystem.dao.DrugInfo;
+
 import java.util.Formatter;
+import java.util.List;
 
 /**
  * Created by think on 2016/10/25.
@@ -13,11 +16,14 @@ public class App extends Application {
 
     public AppSharedPreferences share;
 
+    public List<DrugInfo> list;
+
     @Override
     public void onCreate() {
         super.onCreate();
         app = this;
         share = new AppSharedPreferences(this);
+        
 //        MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this,"581bdb7fe88bad6afb00332c",""));
     }
 

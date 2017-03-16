@@ -55,7 +55,7 @@ public class EnterRecordActivity extends BasicActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setSearchBar();
+        setSearchBar(this, true);
 
         if (isTablet) {
             findViewById(R.id.store_title).setVisibility(View.VISIBLE);

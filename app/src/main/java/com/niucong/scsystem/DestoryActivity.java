@@ -42,7 +42,7 @@ public class DestoryActivity extends BasicActivity {
         toolbar.setTitle("报损处理");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setSearchBar();
+        setSearchBar(this, true);
 
         map = new LinkedHashMap<>();
         mDatas = new ArrayList<>();

@@ -15,5 +15,5 @@
 
     <item
         android:id="@+id/action_select"
-        android:title="日期段"/>
+        android:title="时间段"/>
 </menu>

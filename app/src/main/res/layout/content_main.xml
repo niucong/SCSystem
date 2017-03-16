@@ -32,65 +32,68 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="合计：0.0"
-            android:textSize="20sp" />
+            android:textColor="#ff0000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <CheckBox
             android:id="@+id/main_print"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:checked="false"
-            android:visibility="gone"
             android:text="打印小票"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <RadioGroup
             android:id="@+id/main_pay"
-            android:layout_marginRight="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <RadioButton
-                android:text="现金"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_cash"
-                android:checked="true"
-                android:textSize="18sp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:text="微信"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_wechat"
-                android:textSize="18sp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:text="支付宝"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_alipay"
-                android:textSize="18sp"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:text="刷卡"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/main_card"
-                android:textSize="18sp"
-                android:layout_weight="1" />
-        </RadioGroup>
-
-        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:visibility="gone"
-            android:id="@+id/main_spinner" />
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/main_cash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="现金"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/main_wechat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="微信"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/main_alipay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="支付宝"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/main_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="刷卡"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+        <Spinner
+            android:id="@+id/main_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/main_btn"
@@ -98,13 +101,14 @@
             android:layout_height="wrap_content"
             android:text="结算"
             android:textColor="#88ff0000"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/main_bar"
-        android:layout_above="@+id/buttom_bar"/>
+        android:layout_above="@+id/buttom_bar"
+        android:layout_below="@+id/main_bar" />
 </RelativeLayout>

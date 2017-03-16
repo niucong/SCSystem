@@ -1,7 +1,6 @@
 package com.niucong.scsystem;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -41,7 +40,7 @@ public class StoreActivity extends BasicActivity {
         toolbar.setTitle("查看库存");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setSearchBar();
+        setSearchBar(this, true);
 
         tv_warn = (TextView) findViewById(R.id.store_warn);
         cb_warn = (CheckBox) findViewById(R.id.store_checkBox);

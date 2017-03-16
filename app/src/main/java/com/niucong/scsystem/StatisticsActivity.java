@@ -31,7 +31,7 @@ import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
-import com.niucong.scsystem.view.wheel.DateSelectView;
+import com.niucong.scsystem.view.wheel.DateTimeSelectView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,6 +52,7 @@ public class StatisticsActivity extends BasicActivity {
     private List<SellRecord> mDatas, tempDatas;
 
     private SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat ymdhm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 
     private Date startDate, endDate;
@@ -70,7 +71,7 @@ public class StatisticsActivity extends BasicActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setSearchBar();
+        setSearchBar(this, false);
         tempDatas = new ArrayList<>();
 
         rg = (RadioGroup) findViewById(R.id.store_type);
@@ -93,11 +94,13 @@ public class StatisticsActivity extends BasicActivity {
                         showType = 0;
                         showToday();
                         et_search.setHint("请输入订单号");
+                        setSearchBar(StatisticsActivity.this, false);
                         break;
                     case R.id.store_drug:
                         showType = 1;
                         showToday();
-                        et_search.setHint("请输入条形码");
+                        et_search.setHint("请输入条形码或药品名");
+                        setSearchBar(StatisticsActivity.this, true);
                         break;
                 }
             }
@@ -106,23 +109,7 @@ public class StatisticsActivity extends BasicActivity {
 
     private void showToday() {
         try {
-            String ms = ymd.format(new Date());
-            int mHourOfDay = App.app.share.getIntMessage("SC", "hourOfDay", 0);
-            int mMinute = App.app.share.getIntMessage("SC", "minute", 0);
-            if (mHourOfDay < 10) {
-                ms += " 0" + mHourOfDay;
-            } else {
-                ms += " " + mHourOfDay;
-            }
-            if (mMinute < 10) {
-                ms += ":0" + mMinute;
-            } else {
-                ms += ":" + mMinute;
-            }
-            ms += ":00";
-            Date ed = ymdhms.parse(ms);// 今天结账时间
-            Date sd = new Date(ed.getTime() - 24 * 60 * 60 * 1000);// 昨天结账时间
-            selectData(sd, ed);
+            selectData(ymd.parse(ymd.format(new Date())), new Date());
         } catch (ParseException e) {
             mDatas = new ArrayList<>();
         }
@@ -268,12 +255,12 @@ public class StatisticsActivity extends BasicActivity {
     private void showSubmitDia() {
         final NiftyDialogBuilder submitDia = NiftyDialogBuilder.getInstance(this);
         View selectDateView = LayoutInflater.from(this).inflate(R.layout.dialog_select_date, null);
-        final DateSelectView ds = (DateSelectView) selectDateView.findViewById(R.id.date_start);
-        final DateSelectView de = (DateSelectView) selectDateView.findViewById(R.id.date_end);
+        final DateTimeSelectView ds = (DateTimeSelectView) selectDateView.findViewById(R.id.date_start);
+        final DateTimeSelectView de = (DateTimeSelectView) selectDateView.findViewById(R.id.date_end);
 
         final Calendar c = Calendar.getInstance();
         try {
-            startDate = ymd.parse(ymd.format(new Date()));// 当日00：00：00
+            startDate = ymdhm.parse(ymdhm.format(new Date()));// 当日00：00：00
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -290,20 +277,20 @@ public class StatisticsActivity extends BasicActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    startDate = ymd.parse(ds.getDate());
-                    Log.d(TAG, "开始：" + ds.getDate() + "，结束：" + de.getDate() + "，当前：" + ymd.format(new Date()));
-                    if (ymd.format(new Date()).equals(de.getDate())) {// 结束日期是今天
-                        endDate = new Date();// 当前时间
-                    } else {
-                        endDate = new Date(ymd.parse(de.getDate()).getTime() + 1000 * 60 * 60 * 24 - 1);// 当日23：59：59
-                    }
+                    startDate = ymdhm.parse(ds.getDate());
+                    Log.d(TAG, "开始：" + ds.getDate() + "，结束：" + de.getDate() + "，当前：" + ymdhm.format(new Date()));
+//                    if (ymd.format(new Date()).equals(de.getDate())) {// 结束日期是今天
+//                        endDate = new Date();// 当前时间
+//                    } else {
+//                        endDate = new Date(ymd.parse(de.getDate()).getTime() + 1000 * 60 * 60 * 24 - 1);// 当日23：59：59
+//                    }
                     if (endDate.before(startDate)) {
                         Snackbar.make(mRecyclerView, "开始日期不能大于结束日期", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     } else {
                         selectData(startDate, endDate);
                         setAdapter(mDatas);
-                        startTip = ymd.format(startDate) + "到" + ymd.format(endDate) + "的";
+                        startTip = ymdhm.format(startDate) + "到" + ymdhm.format(endDate) + "的";
                         setStatistics();
                         submitDia.dismiss();
                     }
