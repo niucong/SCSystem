@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -84,6 +85,7 @@ public class StatisticsActivity extends BasicActivity {
 
         mRecyclerView.requestFocus();
 
+        et_search.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         et_search.setHint("请输入订单号");
         rg.setVisibility(View.VISIBLE);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -93,12 +95,14 @@ public class StatisticsActivity extends BasicActivity {
                     case R.id.store_order:
                         showType = 0;
                         showToday();
+                        et_search.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
                         et_search.setHint("请输入订单号");
                         setSearchBar(StatisticsActivity.this, false);
                         break;
                     case R.id.store_drug:
                         showType = 1;
                         showToday();
+                        et_search.setInputType(EditorInfo.TYPE_CLASS_TEXT);
                         et_search.setHint("请输入条形码或药品名");
                         setSearchBar(StatisticsActivity.this, true);
                         break;

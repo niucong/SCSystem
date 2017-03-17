@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
-        android:hint="请输入条形码"
+        android:hint="请输入条形码或药品名"
         android:imeOptions="actionSearch"
-        android:maxLength="13"
+        android:maxLength="17"
         android:padding="5dp"
         android:maxLines="1" />
     <!-- 一键清除功能按钮 -->
