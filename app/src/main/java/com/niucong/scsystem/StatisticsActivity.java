@@ -284,6 +284,7 @@ public class StatisticsActivity extends BasicActivity {
 //                    } else {
 //                        endDate = new Date(ymd.parse(de.getDate()).getTime() + 1000 * 60 * 60 * 24 - 1);// 当日23：59：59
 //                    }
+                    endDate = ymdhm.parse(de.getDate());
                     if (endDate.before(startDate)) {
                         Snackbar.make(mRecyclerView, "开始日期不能大于结束日期", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
