@@ -1,6 +1,5 @@
 package com.niucong.scsystem.printer;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,7 +11,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -28,13 +30,14 @@ import com.gprinter.io.PortParameters;
 import com.gprinter.save.PortParamDataBase;
 import com.gprinter.service.GpPrintService;
 import com.niucong.scsystem.R;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PrinterConnectDialog extends Activity {
+public class PrinterConnectDialog extends AppCompatActivity {
 	private final static String DEBUG_TAG = "SamleApp";
 	private static final int INTENT_PORT_SETTINGS = 0;
 	private ListViewAdapter mListViewAdapter = null;
@@ -63,14 +66,12 @@ public class PrinterConnectDialog extends Activity {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mGpService = GpService.Stub.asInterface(service);
 		}
-	}
-
-	;
+	};
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.e(DEBUG_TAG, "onResume");
+		MobclickAgent.onResume(this);
 	}
 
 	private void connection() {
@@ -86,10 +87,31 @@ public class PrinterConnectDialog extends Activity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.dialog_port);
 		Log.e(DEBUG_TAG, "onCreate ");
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		toolbar.setTitle("连接打印机");
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		initPortParam();
 		initView();
 		registerBroadcast();
 		connection();
+	}
+
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void initPortParam() {
@@ -105,7 +127,6 @@ public class PrinterConnectDialog extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		Log.e(DEBUG_TAG, "onDestroy ");
 		super.onDestroy();
 		this.unregisterReceiver(PrinterStatusBroadcastReceiver);
@@ -220,20 +241,12 @@ public class PrinterConnectDialog extends Activity {
 
 	private List<Map<String, Object>> getOperateItemData() {
 		int[] PrinterID = new int[] { R.string.gprinter001, R.string.gprinter002, R.string.gprinter003,
-				R.string.gprinter004, R.string.gprinter005, R.string.gprinter006, R.string.gprinter007,
-				R.string.gprinter008, R.string.gprinter009, R.string.gprinter010, R.string.gprinter011,
-				R.string.gprinter012, R.string.gprinter013, R.string.gprinter014, R.string.gprinter015,
-				R.string.gprinter016, R.string.gprinter017, R.string.gprinter018, R.string.gprinter019,
-				R.string.gprinter020 };
+				R.string.gprinter004, R.string.gprinter005 };
 		int[] PrinterImage = new int[] { R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
-				R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
-				R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
-				R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
-				R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
-				R.drawable.ic_printer };
+				R.drawable.ic_printer, R.drawable.ic_printer };
 		Map<String, Object> map;
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < GpPrintService.MAX_PRINTER_CNT; i++) {
+		for (int i = 0; i < PrinterID.length; i++) {
 			map = new HashMap<String, Object>();
 			map.put(ListViewAdapter.IMG, PrinterImage[i]);
 			map.put(ListViewAdapter.TITEL, getString(PrinterID[i]));

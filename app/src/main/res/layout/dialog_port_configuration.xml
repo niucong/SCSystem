@@ -2,105 +2,94 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:background="@color/black90">
+    android:orientation="vertical">
+
     <RadioGroup
         android:id="@+id/rgPort"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" 
-        android:paddingLeft="10sp"
-        android:paddingRight="10sp">
+        android:orientation="horizontal"
+        android:padding="10sp" >
+
         <RadioButton
             android:id="@+id/rbBluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:checked="true"
-            android:textSize="15sp"
-            android:textColor="#ffffff"
-            android:text="@string/bluetooth" >
-        </RadioButton>
+            android:text="@string/bluetooth"
+            android:textSize="15sp"></RadioButton>
 
         <RadioButton
             android:id="@+id/rbUsb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textColor="#ffffff"
-            android:text="@string/usb" >
-        </RadioButton>
+            android:layout_weight="1"
+            android:text="@string/usb"
+            android:textSize="15sp"></RadioButton>
 
         <RadioButton
             android:id="@+id/rbEthernet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textColor="#ffffff"
-            android:text="@string/ethernet" >
-        </RadioButton>
-    </RadioGroup>   
-    <TextView 
+            android:layout_weight="1"
+            android:text="@string/ethernet"
+            android:textSize="15sp"></RadioButton>
+    </RadioGroup>
+
+    <TextView
         android:id="@+id/tvPortInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:paddingLeft="10sp"
         android:singleLine="false"
         android:textSize="15sp"
-        android:paddingLeft="10sp"
-        android:textColor="#ffffff"
-        />
-    <LinearLayout 
+        android:visibility="gone" />
+
+    <LinearLayout
         android:id="@+id/llEthernet"
         android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="vertical" 
-    	android:background="@color/black90"
-    	android:visibility="gone"
-    	android:paddingLeft="10sp"
-    	android:paddingRight="10sp"
-    	android:paddingBottom="10sp">
-        <TextView 
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ip_address"
-    	    android:textColor="#ffffff"
-    	    android:padding="0sp"/> 
-        <EditText 
+            android:text="@string/ip_address" />
+
+        <EditText
             android:id="@+id/etIpAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/default_ip_address"
-    	     android:background="@drawable/edittext_style"
-    	     android:textColor="#ffffff"
-            android:hint=""/>
-         <TextView 
+            android:hint=""
+            android:text="@string/default_ip_address" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/port_number"
-            android:textColor="#ffffff"/>
-        <EditText 
+            android:text="@string/port_number" />
+
+        <EditText
             android:id="@+id/etPortNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:textColor="#ffffff"
-            android:background="@drawable/edittext_style"
-            android:text="@string/default_port_number"/>      
+            android:text="@string/default_port_number" />
     </LinearLayout>
-    <Button 
+
+    <Button
         android:id="@+id/btOk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal|center_vertical"
-        android:textSize="15sp"
-        android:visibility="gone"
-        android:textColor="#000000"
+        android:layout_margin="5sp"
+        android:background="@drawable/button_style"
+        android:gravity="center"
+        android:onClick="okButtonClicked"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:background="@drawable/button_style"           
         android:text="@string/ok"
-        android:layout_margin="5sp"
-        android:onClick="okButtonClicked"
-        />   
+        android:visibility="gone" />
 </LinearLayout>
