@@ -316,13 +316,23 @@ public class EnterActivity extends BasicActivity {
         if (er.getNumber() > 0) {
             DBUtil.getDaoSession().getEnterRecordDao().insertOrReplace(er);
         }
+        boolean flag = false;
+        for (DrugInfo drugInfo : App.app.list) {
+            if (drugInfo.getBarCode() == di.getBarCode()) {
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) {
+            App.app.list.add(di);
+            setSearchBar(this, true);
+            SearchAdapter searchAdapter = new SearchAdapter(this, App.app.list);
+            et_name.setAdapter(searchAdapter);
+        }
         clearInput();
         et_search.requestFocus();
         Snackbar.make(btn_send, "入库成功", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-
-        SearchAdapter searchAdapter = new SearchAdapter(this, App.app.list);
-        et_name.setAdapter(searchAdapter);
     }
 
     @Override

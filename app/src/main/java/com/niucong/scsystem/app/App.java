@@ -17,6 +17,7 @@ public class App extends Application {
     public AppSharedPreferences share;
 
     public List<DrugInfo> list;
+    public boolean refresh;
 
     @Override
     public void onCreate() {

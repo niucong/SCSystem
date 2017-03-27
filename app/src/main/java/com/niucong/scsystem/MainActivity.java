@@ -46,6 +46,7 @@ import com.gprinter.command.GpUtils;
 import com.gprinter.command.LabelCommand;
 import com.gprinter.io.GpDevice;
 import com.gprinter.service.GpPrintService;
+import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.SellRecord;
 import com.niucong.scsystem.dao.SellRecordDao;
@@ -196,7 +197,10 @@ public class MainActivity extends BasicActivity
     protected void onStart() {
         super.onStart();
         setNavTip();
-//        setAutoComplete();
+        if (App.app.refresh) {
+            App.app.refresh = false;
+            setSearchBar(this, true);
+        }
     }
 
     private void setNavTip() {
