@@ -18,6 +18,7 @@ import com.niucong.scsystem.dao.DBUtil;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.view.DividerItemDecoration;
+import com.niucong.scsystem.view.NiftyDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,16 +121,35 @@ public class StoreActivity extends BasicActivity {
             holder.tv_code.setText("" + sl.getBarCode());
             holder.tv_num.setText("库存：" + sl.getNumber() + " 售价：" + App.app.showPrice(sl.getPrice()));
 
-            DrugInfo di = DBUtil.getDaoSession().getDrugInfoDao().load(sl.getBarCode());
+            final DrugInfo di = DBUtil.getDaoSession().getDrugInfoDao().load(sl.getBarCode());
             holder.tv_name.setText(di.getName());
             holder.tv_factory.setText(di.getFactory());
 
-            holder.iv_delete.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-                    DBUtil.getDaoSession().getStoreListDao().delete(sl);
-                    mDatas.remove(sl);
-                    notifyDataSetChanged();
+                public boolean onLongClick(View v) {
+                    final NiftyDialogBuilder submitDia = NiftyDialogBuilder.getInstance(StoreActivity.this);
+                    submitDia.withTitle("确定要删除“" + di.getName() + "”吗？");
+                    submitDia.withButton1Text("取消", 0).setButton1Click(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            submitDia.dismiss();
+                        }
+                    });
+                    submitDia.withButton2Text("确定", 0).setButton2Click(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DBUtil.getDaoSession().getStoreListDao().delete(sl);
+                            mDatas.remove(sl);
+                            notifyDataSetChanged();
+
+                            submitDia.dismiss();
+                        }
+                    });
+                    submitDia.withMessage(null).withDuration(400);
+                    submitDia.isCancelable(false);
+                    submitDia.show();
+                    return false;
                 }
             });
         }
