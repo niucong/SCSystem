@@ -54,9 +54,9 @@ import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
 import com.niucong.scsystem.util.FileUtil;
 import com.niucong.scsystem.util.PrintUtil;
+import com.niucong.scsystem.util.ScanGunKeyEventHelper;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.text.ParseException;
@@ -70,7 +70,7 @@ import static com.niucong.scsystem.app.App.app;
 import static com.niucong.scsystem.dao.DBUtil.getDaoSession;
 
 public class MainActivity extends BasicActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ScanGunKeyEventHelper.OnScanSuccessListener {
     private String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
@@ -86,12 +86,20 @@ public class MainActivity extends BasicActivity
 
 //    int mHourOfDay, mMinute;
 
+    private ScanGunKeyEventHelper mScanGunKeyEventHelper;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        MobclickAgent.onEvent(this, "0");
+//        MobclickAgent.onEvent(this, "0");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -145,6 +153,27 @@ public class MainActivity extends BasicActivity
 
         connection();
         registerReceiver(mBroadcastReceiver, new IntentFilter(GpCom.ACTION_DEVICE_REAL_STATUS));
+        mScanGunKeyEventHelper = new ScanGunKeyEventHelper(this);
+    }
+
+    /**
+     * 截获按键事件.发给ScanGunKeyEventHelper
+     *
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (mScanGunKeyEventHelper.isScanGunEvent(event)) {
+            mScanGunKeyEventHelper.analysisKeyEvent(event);
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onScanSuccess(String barcode) {
+        et_search.setText(barcode);
     }
 
     private void setPayType() {
