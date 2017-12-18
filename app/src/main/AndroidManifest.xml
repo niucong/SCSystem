@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.niucong.scsystem">
+          package="com.niucong.scsystem">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.hardware.usb.accessory" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.hardware.usb.accessory"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-feature android:name="android.hardware.usb.host"/>
 
     <application
         android:name=".app.App"
@@ -41,9 +42,11 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
@@ -53,55 +56,72 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".EnterActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".StoreActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".EnterRecordActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".StatisticsActivity"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".OrderActivity"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".DestoryActivity"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".WebActivity"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".AboutActivity"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
 
         <activity
             android:name=".printer.PrinterConnectDialog"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".printer.BluetoothDeviceList"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".printer.UsbDeviceList"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".printer.PortConfigurationActivity"
-            android:configChanges="orientation|keyboardHidden"  />
+            android:configChanges="orientation|keyboardHidden"/>
 
-        <service android:name="com.gprinter.service.GpPrintService"
+        <service
+            android:name="com.gprinter.service.GpPrintService"
             android:enabled="true"
             android:exported="true"
-            android:label="GpPrintService" >
-                <intent-filter>
-                    <action android:name="com.gprinter.aidl.GpPrintService" />
-                </intent-filter>
+            android:label="GpPrintService">
+            <intent-filter>
+                <action android:name="com.gprinter.aidl.GpPrintService"/>
+            </intent-filter>
         </service>
-        <service android:name="com.gprinter.service.AllService" />
+        <service android:name="com.gprinter.service.AllService"/>
+
+        <receiver
+            android:name=".receiver.BootUpReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON"/>
+                <action android:name="android.intent.action.SCREEN_OFF"/>
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="${UMENG_APPKEY}" />
+            android:value="${UMENG_APPKEY}"/>
     </application>
 
 </manifest>
