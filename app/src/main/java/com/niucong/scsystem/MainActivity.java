@@ -154,6 +154,25 @@ public class MainActivity extends BasicActivity
         connection();
         registerReceiver(mBroadcastReceiver, new IntentFilter(GpCom.ACTION_DEVICE_REAL_STATUS));
         mScanGunKeyEventHelper = new ScanGunKeyEventHelper(this);
+
+        et_search.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (KeyEvent.ACTION_DOWN == event.getAction()) {
+//                    Log.d(TAG, "onCreate keyCode=" + keyCode);
+                    if (KeyEvent.KEYCODE_ENTER == keyCode) {
+                        //处理事件
+                        sendOrder();
+                        return true;
+                    } if (keyCode == 111) {
+                        uRecords.clear();
+                        mAdapter.notifyDataSetChanged();
+                        tv_total.setText("合计：0.0");
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     /**
@@ -294,45 +313,49 @@ public class MainActivity extends BasicActivity
         switch (v.getId()) {
             case R.id.main_btn:
                 // 结算
-                Log.d(TAG, "onClick size=" + uRecords.size());
-                if (uRecords.size() == 0) {
-                    return;
-                }
-                List<StoreList> uStores = new ArrayList<>();
-                List<SellRecord> sRecords = new ArrayList<>();
-                Date date = new Date();
-                for (SellRecord sr : uRecords) {
-                    int sellNum = sr.getNumber();
-                    sr.setSellDate(date);
-                    sr.setPayType(payType);
-                    sRecords.add(sr);
-
-                    StoreList si = getDaoSession().getStoreListDao().load(sr.getBarCode());
-                    if (sr.getPrice() < 0) {
-                        sellNum = -sellNum;
-                    }
-                    si.setNumber(si.getNumber() - sellNum);
-                    uStores.add(si);
-                }
-                getDaoSession().getStoreListDao().insertOrReplaceInTx(uStores);
-                getDaoSession().getSellRecordDao().insertOrReplaceInTx(sRecords);
-
-                uRecords.clear();
-                mAdapter.notifyDataSetChanged();
-                if (isTablet) {
-                    rg.check(R.id.main_cash);
-                } else {
-                    sp.setSelection(0);
-                }
-                tv_total.setText("合计：0.0");
-                Snackbar.make(mRecyclerView, "结算成功", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                setNavTip();
-                if (cb.isChecked()) {
-                    PrintUtil.printStick(mGpService, sRecords);
-                    cb.setChecked(false);
-                }
+                sendOrder();
                 break;
+        }
+    }
+
+    private void sendOrder() {
+        Log.d(TAG, "sendOrder size=" + uRecords.size());
+        if (uRecords.size() == 0) {
+            return;
+        }
+        List<StoreList> uStores = new ArrayList<>();
+        List<SellRecord> sRecords = new ArrayList<>();
+        Date date = new Date();
+        for (SellRecord sr : uRecords) {
+            int sellNum = sr.getNumber();
+            sr.setSellDate(date);
+            sr.setPayType(payType);
+            sRecords.add(sr);
+
+            StoreList si = getDaoSession().getStoreListDao().load(sr.getBarCode());
+            if (sr.getPrice() < 0) {
+                sellNum = -sellNum;
+            }
+            si.setNumber(si.getNumber() - sellNum);
+            uStores.add(si);
+        }
+        getDaoSession().getStoreListDao().insertOrReplaceInTx(uStores);
+        getDaoSession().getSellRecordDao().insertOrReplaceInTx(sRecords);
+
+        uRecords.clear();
+        mAdapter.notifyDataSetChanged();
+        if (isTablet) {
+            rg.check(R.id.main_cash);
+        } else {
+            sp.setSelection(0);
+        }
+        tv_total.setText("合计：0.0");
+        Snackbar.make(mRecyclerView, "结算成功", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+        setNavTip();
+        if (cb.isChecked()) {
+            PrintUtil.printStick(mGpService, sRecords);
+            cb.setChecked(false);
         }
     }
 
