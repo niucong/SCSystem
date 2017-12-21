@@ -35,6 +35,7 @@
         android:layout_height="30dp"
         android:onClick="button"
         android:padding="5dp"
+        android:visibility="gone"
         android:clickable="true"
         android:src="@drawable/icon_scan" />
 </LinearLayout>

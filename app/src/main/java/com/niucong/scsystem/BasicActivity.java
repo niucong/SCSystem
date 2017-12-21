@@ -93,8 +93,8 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
             public void afterTextChanged(Editable s) {
                 String str = s.toString().trim();
                 if (str.length() > 0) {
-                    iv_delete.setVisibility(View.VISIBLE);
-                    iv_scan.setVisibility(View.GONE);
+//                    iv_delete.setVisibility(View.VISIBLE);
+//                    iv_scan.setVisibility(View.GONE);
                     try {
                         Long.valueOf(str);
                         if (str.length() > 11) {
@@ -104,8 +104,8 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
 
                     }
                 } else {
-                    iv_delete.setVisibility(View.GONE);
-                    iv_scan.setVisibility(View.VISIBLE);
+//                    iv_delete.setVisibility(View.GONE);
+//                    iv_scan.setVisibility(View.VISIBLE);
                     et_search.requestFocus();
                 }
             }
