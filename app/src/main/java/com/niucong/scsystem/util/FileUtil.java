@@ -42,14 +42,50 @@ public class FileUtil {
      */
     public boolean copySDcradToDB(Context c) {
         String DATABASE_NAME = "shunchang";
-        String oldPath = SDCardPath + DATABASE_NAME;
+        String oldPath = "file:///android_asset/" + DATABASE_NAME;// SDCardPath
         String newPath = c.getDatabasePath(DATABASE_NAME).getPath();
         Log.i("mainactivity", "copySDcradToDB oldPath=" + oldPath);
         Log.i("mainactivity", "copySDcradToDB newPath=" + newPath);
-        copyFile(oldPath, newPath);
-        File proFile = new File(oldPath);
-        File myFile = new File(oldPath + ymdhms.format(new Date()));
-        return proFile.renameTo(myFile);
+        return copyAssetsFile(c, DATABASE_NAME, newPath);
+//        copyFile(oldPath, newPath);
+//        File proFile = new File(oldPath);
+//        File myFile = new File(oldPath + ymdhms.format(new Date()));
+//        return proFile.renameTo(myFile);
+    }
+
+    /**
+     *  * 复制单个文件
+     *  *
+     *  * @param oldPath
+     *  *            String 原文件路径
+     *  * @param newPath
+     *  *            String 复制后路径
+     *  * @return boolean
+     *  
+     */
+    public static boolean copyAssetsFile(Context c, String oldFileName, String newPath) {
+        try {
+            int bytesum = 0;
+            int byteread = 0;
+            File newfile = new File(newPath);
+            if (!newfile.exists()) {
+                newfile.createNewFile();
+            }
+            InputStream inStream = c.getAssets().open(oldFileName);
+            FileOutputStream fs = new FileOutputStream(newPath);
+            byte[] buffer = new byte[1444];
+            while ((byteread = inStream.read(buffer)) != -1) {
+                bytesum += byteread; // 字节数 文件大小
+                fs.write(buffer, 0, byteread);
+            }
+            inStream.close();
+            Log.i("mainactivity", "复制文件成功");
+            return true;
+        } catch (Exception e) {
+            Log.i("mainactivity", "复制文件操作出错");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -80,12 +116,14 @@ public class FileUtil {
                     fs.write(buffer, 0, byteread);
                 }
                 inStream.close();
-                System.out.println("复制文件成功");
+                Log.i("mainactivity", "复制文件成功");
                 return true;
+            } else {
+                Log.i("mainactivity", "文件不存在");
             }
             return false;
         } catch (Exception e) {
-            System.out.println("复制文件操作出错");
+            Log.i("mainactivity", "复制文件操作出错");
             e.printStackTrace();
             return false;
         }

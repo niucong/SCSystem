@@ -668,8 +668,8 @@ public class MainActivity extends BasicActivity
                     }
                 } else {
                     if (rb1.isChecked()) {
-                        File f = new File(SDCardPath + "shunchang");
-                        if (f.exists()) {
+//                        File f = new File(SDCardPath + "shunchang");
+//                        if (f.exists()) {
                             Snackbar.make(mRecyclerView, "正在导入数据", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                             new Thread() {
@@ -690,10 +690,10 @@ public class MainActivity extends BasicActivity
                                     });
                                 }
                             }.start();
-                        } else {
-                            Snackbar.make(mRecyclerView, "所导入的数据文件不存在", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                        }
+//                        } else {
+//                            Snackbar.make(mRecyclerView, "所导入的数据文件不存在", Snackbar.LENGTH_LONG)
+//                                    .setAction("Action", null).show();
+//                        }
                     } else {
                         Snackbar.make(mRecyclerView, "正在导出数据", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
