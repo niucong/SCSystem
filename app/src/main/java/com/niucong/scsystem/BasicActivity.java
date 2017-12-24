@@ -268,7 +268,7 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
                         .setAction("Action", null).show();
             } else {
                 if (searchDrug(result)) {
-//                    et_search.setText("");
+                    et_search.setText("");
                 }
             }
         } else {

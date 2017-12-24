@@ -184,14 +184,17 @@ public class MainActivity extends BasicActivity
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (mScanGunKeyEventHelper.isScanGunEvent(event)) {
+            Log.d(TAG, "dispatchKeyEvent true");
             mScanGunKeyEventHelper.analysisKeyEvent(event);
             return true;
         }
+        Log.d(TAG, "dispatchKeyEvent false");
         return super.dispatchKeyEvent(event);
     }
 
     @Override
     public void onScanSuccess(String barcode) {
+        Log.d(TAG, "onScanSuccess barcode=" + barcode);
 //        et_search.setText(barcode);
         searchDrug(barcode);
     }
@@ -394,8 +397,8 @@ public class MainActivity extends BasicActivity
             uRecords.add(0, sr);
             mAdapter.notifyDataSetChanged();
             getTotalPrice();
-            et_search.setText("");
-            mRecyclerView.requestFocus();
+//            et_search.setText("");
+//            mRecyclerView.requestFocus();
             return true;
         } else {
             Snackbar.make(mRecyclerView, "该药品不在库存中,请先添加入库", Snackbar.LENGTH_LONG)

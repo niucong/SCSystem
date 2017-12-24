@@ -5,8 +5,13 @@ package com.niucong.scsystem.util;
  */
 
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
+import android.widget.Toast;
+
+import com.niucong.scsystem.app.App;
 
 
 /**
@@ -20,7 +25,7 @@ public class ScanGunKeyEventHelper {
     private final Handler mHandler;
     private final Runnable mScanningFishedRunnable;
     private OnScanSuccessListener mOnScanSuccessListener;
-    private String mDeviceName = "nuvoTon USB HID";//聚龙扫码枪型号名
+    private String mDeviceName = "nuvoTon USB HID";//聚龙扫码枪型号名 MTK BT HID、USBKey Chip USBKey Module
 
     public ScanGunKeyEventHelper(OnScanSuccessListener onScanSuccessListener) {
         mOnScanSuccessListener = onScanSuccessListener ;
@@ -170,14 +175,14 @@ public class ScanGunKeyEventHelper {
 
 
     /**
-     * 是否为扫码枪事件(部分机型KeyEvent获取的名字错误)
+     * 是否为扫码枪事件(部分机型KeyEvent获取的名字错误);
      * @param event
      * @return
      */
     public boolean isScanGunEvent(KeyEvent event) {
-        return event.getDevice().getName().equals(mDeviceName);
+        String deviceName = event.getDevice().getName();
+        return deviceName.equals("MTK BT HID") || deviceName.equals("USBKey Chip USBKey Module");
     }
-
 
 
 }

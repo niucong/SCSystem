@@ -56,8 +56,8 @@ public class PrintUtil {
             payType = sr.getPayType();
             allPrice += sr.getPrice() * sr.getNumber();
             DrugInfo di = DBUtil.getDaoSession().getDrugInfoDao().load(sr.getBarCode());
-            esc.addText((i + 1) + "\t\t" + di.getName() + "\n");
-            esc.addText(di.getBarCode() + "\t\t\t\t" + sr.getNumber() + "*" + App.app.showPrice(sr.getPrice()) + "\t\t\t\t" + App.app.showPrice(sr.getPrice() * sr.getNumber()) + "\n");
+            esc.addText((i + 1) + "\t" + di.getName() + "\n");
+            esc.addText(di.getBarCode() + "\n" + sr.getNumber() + "*" + App.app.showPrice(sr.getPrice()) + "\t\t" + App.app.showPrice(sr.getPrice() * sr.getNumber()) + "\n");
         }
         esc.addPrintAndLineFeed();
 
@@ -83,12 +83,12 @@ public class PrintUtil {
         // 设置条码高度为60点
         esc.addSetBarcodeHeight((byte) 60);
         // 设置条码单元宽度为1点
-        esc.addSetBarcodeWidth((byte) 1);
+        esc.addSetBarcodeWidth((byte) 2);
         // 打印Code128码
         esc.addCODE128("" + d.getTime());
         esc.addCODE128(esc.genCodeB("" + d.getTime()));
-        esc.addText("\n\n");
         esc.addPrintAndLineFeed();
+        esc.addText("\n\n");
 
         Vector<Byte> datas = esc.getCommand();
         // 发送数据
