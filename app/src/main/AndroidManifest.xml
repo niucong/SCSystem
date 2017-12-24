@@ -45,8 +45,6 @@
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
@@ -103,28 +101,12 @@
         </service>
         <service android:name="com.gprinter.service.AllService"/>
 
-        <receiver
-            android:name=".receiver.BootUpReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SCREEN_ON"/>
-                <action android:name="android.intent.action.SCREEN_OFF"/>
-            </intent-filter>
-        </receiver>
-
         <!--<meta-data-->
             <!--android:name="android.max_aspect"-->
             <!--android:value="2.1"/>-->
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="${UMENG_APPKEY}"/>
+        <!--<meta-data-->
+            <!--android:name="UMENG_APPKEY"-->
+            <!--android:value="${UMENG_APPKEY}"/>-->
     </application>
 
 </manifest>

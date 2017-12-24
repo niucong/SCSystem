@@ -22,7 +22,7 @@ import com.niucong.scsystem.dao.EnterRecord;
 import com.niucong.scsystem.dao.EnterRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.util.CnToSpell;
-import com.umeng.analytics.MobclickAgent;
+//import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,7 +46,7 @@ public class EnterActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter);
-        MobclickAgent.onEvent(this, "1");
+//        MobclickAgent.onEvent(this, "1");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("添加库存");

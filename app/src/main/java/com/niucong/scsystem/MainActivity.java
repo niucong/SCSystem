@@ -192,7 +192,8 @@ public class MainActivity extends BasicActivity
 
     @Override
     public void onScanSuccess(String barcode) {
-        et_search.setText(barcode);
+//        et_search.setText(barcode);
+        searchDrug(barcode);
     }
 
     private void setPayType() {
@@ -394,6 +395,7 @@ public class MainActivity extends BasicActivity
             mAdapter.notifyDataSetChanged();
             getTotalPrice();
             et_search.setText("");
+            mRecyclerView.requestFocus();
             return true;
         } else {
             Snackbar.make(mRecyclerView, "该药品不在库存中,请先添加入库", Snackbar.LENGTH_LONG)

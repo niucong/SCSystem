@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.umeng.analytics.MobclickAgent;
+//import com.umeng.analytics.MobclickAgent;
 
 public class AboutActivity extends BasicActivity {
 
@@ -27,15 +27,15 @@ public class AboutActivity extends BasicActivity {
         }
     }
 
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onResume(this);
-    }
-
-    public void onPause() {
-        super.onPause();
-        MobclickAgent.onPause(this);
-    }
+//    public void onResume() {
+//        super.onResume();
+//        MobclickAgent.onResume(this);
+//    }
+//
+//    public void onPause() {
+//        super.onPause();
+//        MobclickAgent.onPause(this);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

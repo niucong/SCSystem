@@ -87,6 +87,7 @@ public class PrintUtil {
         // 打印Code128码
         esc.addCODE128("" + d.getTime());
         esc.addCODE128(esc.genCodeB("" + d.getTime()));
+        esc.addText("\n\n");
         esc.addPrintAndLineFeed();
 
         Vector<Byte> datas = esc.getCommand();

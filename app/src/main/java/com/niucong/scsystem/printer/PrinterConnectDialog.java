@@ -30,7 +30,7 @@ import com.gprinter.io.PortParameters;
 import com.gprinter.save.PortParamDataBase;
 import com.gprinter.service.GpPrintService;
 import com.niucong.scsystem.R;
-import com.umeng.analytics.MobclickAgent;
+//import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public class PrinterConnectDialog extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MobclickAgent.onResume(this);
+//		MobclickAgent.onResume(this);
 	}
 
 	private void connection() {
@@ -101,7 +101,7 @@ public class PrinterConnectDialog extends AppCompatActivity {
 
 	public void onPause() {
 		super.onPause();
-		MobclickAgent.onPause(this);
+//		MobclickAgent.onPause(this);
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class PrinterConnectDialog extends AppCompatActivity {
 
 	void SetLinkButtonEnable(String s) {
 		Map<String, Object> map;
-		for (int i = 0; i < GpPrintService.MAX_PRINTER_CNT; i++) {
+		for (int i = 0; i < PrinterID.length; i++) {
 			map = mList.get(i);
 			map.put(ListViewAdapter.BT_ENABLE, s);
 			mList.set(i, map);
@@ -239,11 +239,12 @@ public class PrinterConnectDialog extends AppCompatActivity {
 		mListViewAdapter.notifyDataSetChanged();
 	}
 
+	int[] PrinterID = new int[] { R.string.gprinter001, R.string.gprinter002, R.string.gprinter003,
+			R.string.gprinter004, R.string.gprinter005 };
+	int[] PrinterImage = new int[] { R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
+			R.drawable.ic_printer, R.drawable.ic_printer };
+
 	private List<Map<String, Object>> getOperateItemData() {
-		int[] PrinterID = new int[] { R.string.gprinter001, R.string.gprinter002, R.string.gprinter003,
-				R.string.gprinter004, R.string.gprinter005 };
-		int[] PrinterImage = new int[] { R.drawable.ic_printer, R.drawable.ic_printer, R.drawable.ic_printer,
-				R.drawable.ic_printer, R.drawable.ic_printer };
 		Map<String, Object> map;
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		for (int i = 0; i < PrinterID.length; i++) {
@@ -300,7 +301,6 @@ public class PrinterConnectDialog extends AppCompatActivity {
 						rel = mGpService.openPort(PrinterId, mPortParam[PrinterId].getPortType(),
 								mPortParam[PrinterId].getUsbDeviceName(), 0);
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					break;
@@ -309,7 +309,6 @@ public class PrinterConnectDialog extends AppCompatActivity {
 						rel = mGpService.openPort(PrinterId, mPortParam[PrinterId].getPortType(),
 								mPortParam[PrinterId].getIpAddr(), mPortParam[PrinterId].getPortNumber());
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					break;
@@ -349,7 +348,6 @@ public class PrinterConnectDialog extends AppCompatActivity {
 			try {
 				mGpService.closePort(PrinterId);
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -387,7 +385,6 @@ public class PrinterConnectDialog extends AppCompatActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		Log.d(DEBUG_TAG, "requestCode" + requestCode + '\n' + "resultCode" + resultCode);
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == INTENT_PORT_SETTINGS) {
