@@ -36,7 +36,7 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
     private String TAG = "BasicActivity";
 
     protected AutoCompleteTextView et_search;
-    protected ScanGunKeyEventHelper mScanGunKeyEventHelper;
+    private ScanGunKeyEventHelper mScanGunKeyEventHelper;
 
     protected boolean isTablet;
 
