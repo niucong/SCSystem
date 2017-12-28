@@ -5,13 +5,8 @@ package com.niucong.scsystem.util;
  */
 
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
-import android.widget.Toast;
-
-import com.niucong.scsystem.app.App;
 
 
 /**
@@ -28,7 +23,7 @@ public class ScanGunKeyEventHelper {
     private String mDeviceName = "nuvoTon USB HID";//聚龙扫码枪型号名 MTK BT HID、USBKey Chip USBKey Module
 
     public ScanGunKeyEventHelper(OnScanSuccessListener onScanSuccessListener) {
-        mOnScanSuccessListener = onScanSuccessListener ;
+        mOnScanSuccessListener = onScanSuccessListener;
         mStringBufferResult = new StringBuffer();
         mHandler = new Handler();
         mScanningFishedRunnable = new Runnable() {
@@ -53,6 +48,7 @@ public class ScanGunKeyEventHelper {
 
     /**
      * 扫码枪事件解析
+     *
      * @param event
      */
     public void analysisKeyEvent(KeyEvent event) {
@@ -64,7 +60,8 @@ public class ScanGunKeyEventHelper {
 
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
 
-            char aChar = getInputCode(event);;
+            char aChar = getInputCode(event);
+            ;
 
             if (aChar != 0) {
                 mStringBufferResult.append(aChar);
@@ -131,24 +128,17 @@ public class ScanGunKeyEventHelper {
                     break;
             }
         }
-
         return aChar;
-
     }
-
-
-
 
     public interface OnScanSuccessListener {
         void onScanSuccess(String barcode);
     }
 
-
     public void onDestroy() {
         mHandler.removeCallbacks(mScanningFishedRunnable);
         mOnScanSuccessListener = null;
     }
-
 
     //部分手机如三星，无法使用该方法
 //    private void hasScanGun() {
@@ -159,6 +149,7 @@ public class ScanGunKeyEventHelper {
 
     /**
      * 输入设备是否存在
+     *
      * @param deviceName
      * @return
      */
@@ -176,6 +167,7 @@ public class ScanGunKeyEventHelper {
 
     /**
      * 是否为扫码枪事件(部分机型KeyEvent获取的名字错误);
+     *
      * @param event
      * @return
      */

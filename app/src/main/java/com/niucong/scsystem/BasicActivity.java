@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,14 +25,18 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DrugInfo;
-//import com.umeng.analytics.MobclickAgent;
+import com.niucong.scsystem.util.ScanGunKeyEventHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BasicActivity extends AppCompatActivity implements View.OnClickListener {
+//import com.umeng.analytics.MobclickAgent;
+
+public abstract class BasicActivity extends AppCompatActivity implements View.OnClickListener, ScanGunKeyEventHelper.OnScanSuccessListener {
+    private String TAG = "BasicActivity";
 
     protected AutoCompleteTextView et_search;
+    protected ScanGunKeyEventHelper mScanGunKeyEventHelper;
 
     protected boolean isTablet;
 
@@ -43,10 +49,36 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onCreate(savedInstanceState);
+
+        mScanGunKeyEventHelper = new ScanGunKeyEventHelper(this);
     }
 
     private boolean isTablet() {
         return getResources().getBoolean(R.bool.isTablet);
+    }
+
+    /**
+     * 截获按键事件.发给ScanGunKeyEventHelper
+     *
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (mScanGunKeyEventHelper.isScanGunEvent(event)) {
+            Log.d(TAG, "dispatchKeyEvent true");
+            mScanGunKeyEventHelper.analysisKeyEvent(event);
+            return true;
+        }
+        Log.d(TAG, "dispatchKeyEvent false");
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onScanSuccess(String barcode) {
+        Log.d(TAG, "onScanSuccess barcode=" + barcode);
+//        et_search.setText(barcode);
+        searchDrug(barcode);
     }
 
 //    public void onResume() {

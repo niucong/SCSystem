@@ -54,7 +54,6 @@ import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
 import com.niucong.scsystem.util.FileUtil;
 import com.niucong.scsystem.util.PrintUtil;
-import com.niucong.scsystem.util.ScanGunKeyEventHelper;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
 
@@ -70,7 +69,7 @@ import static com.niucong.scsystem.app.App.app;
 import static com.niucong.scsystem.dao.DBUtil.getDaoSession;
 
 public class MainActivity extends BasicActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ScanGunKeyEventHelper.OnScanSuccessListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
     private String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
@@ -85,8 +84,6 @@ public class MainActivity extends BasicActivity
     private int payType = 0;
 
 //    int mHourOfDay, mMinute;
-
-    private ScanGunKeyEventHelper mScanGunKeyEventHelper;
 
     @Override
     protected void onDestroy() {
@@ -153,7 +150,6 @@ public class MainActivity extends BasicActivity
 
         connection();
         registerReceiver(mBroadcastReceiver, new IntentFilter(GpCom.ACTION_DEVICE_REAL_STATUS));
-        mScanGunKeyEventHelper = new ScanGunKeyEventHelper(this);
 
         et_search.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -173,30 +169,6 @@ public class MainActivity extends BasicActivity
                 return false;
             }
         });
-    }
-
-    /**
-     * 截获按键事件.发给ScanGunKeyEventHelper
-     *
-     * @param event
-     * @return
-     */
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mScanGunKeyEventHelper.isScanGunEvent(event)) {
-            Log.d(TAG, "dispatchKeyEvent true");
-            mScanGunKeyEventHelper.analysisKeyEvent(event);
-            return true;
-        }
-        Log.d(TAG, "dispatchKeyEvent false");
-        return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public void onScanSuccess(String barcode) {
-        Log.d(TAG, "onScanSuccess barcode=" + barcode);
-//        et_search.setText(barcode);
-        searchDrug(barcode);
     }
 
     private void setPayType() {
@@ -303,13 +275,13 @@ public class MainActivity extends BasicActivity
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     @Override
     public void onClick(View v) {
