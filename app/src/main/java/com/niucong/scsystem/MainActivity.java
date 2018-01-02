@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
@@ -57,7 +56,6 @@ import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
 
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -157,13 +155,16 @@ public class MainActivity extends BasicActivity
                 if (KeyEvent.ACTION_DOWN == event.getAction()) {
 //                    Log.d(TAG, "onCreate keyCode=" + keyCode);
                     if (KeyEvent.KEYCODE_ENTER == keyCode) {
-                        //处理事件
-                        sendOrder();
-                        return true;
-                    } if (keyCode == 111) {
+                        if (TextUtils.isEmpty(et_search.getText().toString())) {
+                            //处理事件
+                            sendOrder();
+                            return true;
+                        }
+                    } else if (keyCode == 111) {
                         uRecords.clear();
                         mAdapter.notifyDataSetChanged();
                         tv_total.setText("合计：0.0");
+                        return true;
                     }
                 }
                 return false;
@@ -593,7 +594,7 @@ public class MainActivity extends BasicActivity
         final RadioButton rb1 = (RadioButton) settingView.findViewById(R.id.radioButton1);
         RadioButton rb2 = (RadioButton) settingView.findViewById(R.id.radioButton2);
 
-        final String SDCardPath = Environment.getExternalStorageDirectory() + File.separator;
+        final String SDCardPath = "/storage/usbotg/";//Environment.getExternalStorageDirectory() + File.separator;// 081C-9F49
 
         if (type == 0) {
             submitDia.withTitle("设置扫码摄像头");
@@ -647,26 +648,26 @@ public class MainActivity extends BasicActivity
                     if (rb1.isChecked()) {
 //                        File f = new File(SDCardPath + "shunchang");
 //                        if (f.exists()) {
-                            Snackbar.make(mRecyclerView, "正在导入数据", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    final boolean flag = new FileUtil().copySDcradToDB(MainActivity.this);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (flag) {
-                                                Snackbar.make(mRecyclerView, "数据导入成功", Snackbar.LENGTH_LONG)
-                                                        .setAction("Action", null).show();
-                                            } else {
-                                                Snackbar.make(mRecyclerView, "数据导入失败", Snackbar.LENGTH_LONG)
-                                                        .setAction("Action", null).show();
-                                            }
+                        Snackbar.make(mRecyclerView, "正在导入数据", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                final boolean flag = new FileUtil().copySDcradToDB(MainActivity.this, SDCardPath);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (flag) {
+                                            Snackbar.make(mRecyclerView, "数据导入成功", Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
+                                        } else {
+                                            Snackbar.make(mRecyclerView, "数据导入失败", Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
                                         }
-                                    });
-                                }
-                            }.start();
+                                    }
+                                });
+                            }
+                        }.start();
 //                        } else {
 //                            Snackbar.make(mRecyclerView, "所导入的数据文件不存在", Snackbar.LENGTH_LONG)
 //                                    .setAction("Action", null).show();
@@ -677,7 +678,7 @@ public class MainActivity extends BasicActivity
                         new Thread() {
                             @Override
                             public void run() {
-                                final boolean flag = new FileUtil().copyDBToSDcrad(MainActivity.this);
+                                final boolean flag = new FileUtil().copyDBToSDcrad(MainActivity.this, SDCardPath);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

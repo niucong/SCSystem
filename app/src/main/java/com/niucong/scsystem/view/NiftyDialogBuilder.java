@@ -53,6 +53,8 @@ public class NiftyDialogBuilder extends Dialog implements DialogInterface {
 
     private Button mButton2;
 
+    private Button mButton3;
+
     private int mDuration = 500;
 
     private boolean isCancelable = true;
@@ -98,9 +100,11 @@ public class NiftyDialogBuilder extends Dialog implements DialogInterface {
         mDivider = mDialogView.findViewById(R.id.titleDivider);
         mButton1 = (Button) mDialogView.findViewById(R.id.button1);
         mButton2 = (Button) mDialogView.findViewById(R.id.button2);
+        mButton3 = (Button) mDialogView.findViewById(R.id.button3);
 
         mButton1.setVisibility(View.GONE);
         mButton2.setVisibility(View.GONE);
+        mButton3.setVisibility(View.GONE);
         setContentView(mDialogView);
     }
 
@@ -302,6 +306,21 @@ public class NiftyDialogBuilder extends Dialog implements DialogInterface {
     }
 
     /**
+     * 设置第三个按钮文字
+     * @param text
+     * @param textColorId 字体颜色
+     * @return
+     */
+    public NiftyDialogBuilder withButton3Text(CharSequence text,int textColorId) {
+        mButton3.setVisibility(View.VISIBLE);
+        mButton3.setText(text);
+        if (textColorId != 0) {
+            mButton3.setTextColor(App.app.getResources().getColor(textColorId));
+        }
+        return this;
+    }
+
+    /**
      * 设置第一个按钮点击事件
      *
      * @param click
@@ -320,6 +339,17 @@ public class NiftyDialogBuilder extends Dialog implements DialogInterface {
      */
     public NiftyDialogBuilder setButton2Click(View.OnClickListener click) {
         mButton2.setOnClickListener(click);
+        return this;
+    }
+
+    /**
+     * 设置第三个按钮点击事件
+     *
+     * @param click
+     * @return
+     */
+    public NiftyDialogBuilder setButton3Click(View.OnClickListener click) {
+        mButton3.setOnClickListener(click);
         return this;
     }
 

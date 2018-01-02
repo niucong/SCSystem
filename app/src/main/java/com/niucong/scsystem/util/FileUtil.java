@@ -1,8 +1,10 @@
 package com.niucong.scsystem.util;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
+
+import com.niucong.scsystem.app.App;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,13 +19,12 @@ import java.util.Date;
 
 public class FileUtil {
 
-    private String SDCardPath = Environment.getExternalStorageDirectory() + File.separator;
     private SimpleDateFormat ymdhms = new SimpleDateFormat("yyyyMMddHHmm");
 
     /**
      * 导出数据
      */
-    public boolean copyDBToSDcrad(Context c) {
+    public boolean copyDBToSDcrad(Context c, String SDCardPath) {
         String DATABASE_NAME = "shunchang";
         String oldPath = c.getDatabasePath(DATABASE_NAME).getPath();
         String newPath = SDCardPath + DATABASE_NAME;
@@ -40,7 +41,7 @@ public class FileUtil {
     /**
      * 导入数据
      */
-    public boolean copySDcradToDB(Context c) {
+    public boolean copySDcradToDB(Context c, String SDCardPath) {
         String DATABASE_NAME = "shunchang";
         String oldPath = "file:///android_asset/" + DATABASE_NAME;// SDCardPath
         String newPath = c.getDatabasePath(DATABASE_NAME).getPath();
@@ -120,6 +121,7 @@ public class FileUtil {
             return false;
         } catch (Exception e) {
             Log.i("mainactivity", "复制文件操作出错");
+            MobclickAgent.reportError(App.app, "复制文件操作出错 " + e);
             e.printStackTrace();
             return false;
         }

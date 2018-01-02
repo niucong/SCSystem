@@ -40,6 +40,8 @@ public class EnterActivity extends BasicActivity {
     private StoreList sl;// 库存
     private EnterRecord er;// 进货记录
 
+    private long barCode;
+
     private SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
@@ -57,6 +59,11 @@ public class EnterActivity extends BasicActivity {
         setView();
 
         btn_send.setOnClickListener(this);
+
+        barCode = getIntent().getLongExtra("BarCode", 0);
+        if (barCode > 0) {
+            searchDrug(barCode + "");
+        }
     }
 
     private void setView() {

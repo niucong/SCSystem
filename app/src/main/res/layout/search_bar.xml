@@ -16,7 +16,7 @@
         android:imeOptions="actionSearch"
         android:maxLength="17"
         android:padding="5dp"
-        android:maxLines="1" />
+        android:singleLine="true"/>
     <!-- 一键清除功能按钮 -->
 
     <ImageView

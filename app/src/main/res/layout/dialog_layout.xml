@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/dialog_commonality_bg"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/dialog_commonality_bg"
+              android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/topPanel"
@@ -24,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="8dip"
                 android:scaleType="centerInside"
-                android:src="@null" />
+                android:src="@null"/>
 
             <TextView
                 android:id="@+id/alertTitle"
@@ -37,12 +37,12 @@
                 android:maxLines="1"
                 android:text="标题"
                 android:textColor="#333333"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
         </RelativeLayout>
 
         <View
             android:id="@+id/titleDivider"
-            style="@style/LineHorizontalStyle" />
+            style="@style/LineHorizontalStyle"/>
     </LinearLayout>
 
     <TextView
@@ -53,16 +53,16 @@
         android:text="提示消息"
         android:textColor="#333333"
         android:textIsSelectable="true"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
     <FrameLayout
         android:id="@+id/customPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/line_above_button"
-        style="@style/LineHorizontalStyle" />
+        style="@style/LineHorizontalStyle"/>
 
     <LinearLayout
         android:id="@+id/ll_dialog_button"
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bt_white_enrich_left"
-            android:text="取消" />
+            android:text="取消"/>
 
         <Button
             android:id="@+id/button2"
@@ -85,6 +85,16 @@
             android:layout_weight="1"
             android:background="@drawable/bt_white_enrich_right"
             android:text="确定"
-            android:textColor="#EA693F" />
+            android:textColor="#EA693F"/>
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bt_white_enrich_right"
+            android:text="编辑"
+            android:textColor="#0000ff"
+            android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>

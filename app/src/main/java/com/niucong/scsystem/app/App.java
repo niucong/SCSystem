@@ -3,6 +3,7 @@ package com.niucong.scsystem.app;
 import android.app.Application;
 
 import com.niucong.scsystem.dao.DrugInfo;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.Formatter;
 import java.util.List;
@@ -24,8 +25,8 @@ public class App extends Application {
         super.onCreate();
         app = this;
         share = new AppSharedPreferences(this);
-        
-//        MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this,"581bdb7fe88bad6afb00332c",""));
+
+        MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, "581bdb7fe88bad6afb00332c", ""));
     }
 
     /**

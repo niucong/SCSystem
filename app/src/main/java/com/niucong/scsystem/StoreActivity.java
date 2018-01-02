@@ -5,20 +5,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.niucong.scsystem.app.App;
+import com.niucong.scsystem.adapter.StoreAdapter;
 import com.niucong.scsystem.dao.DBUtil;
-import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.view.DividerItemDecoration;
-import com.niucong.scsystem.view.NiftyDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +41,41 @@ public class StoreActivity extends BasicActivity {
         tv_warn = (TextView) findViewById(R.id.store_warn);
         cb_warn = (CheckBox) findViewById(R.id.store_checkBox);
         mRecyclerView = (RecyclerView) findViewById(R.id.store_rv);
+
+        setData();
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter = new StoreAdapter(this, mDatas));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST));
+
+        mAdapter.setOnItemListener(new StoreAdapter.OnItemListener() {
+            @Override
+            public void onClick(View v, int pos) {
+                mAdapter.setDefSelect(pos);
+            }
+
+            @Override
+            public void onDelete(StoreList sl) {
+                mDatas.remove(sl);
+            }
+        });
+
+        cb_warn.setVisibility(View.VISIBLE);
+        cb_warn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mRecyclerView.setAdapter(mAdapter = new StoreAdapter(StoreActivity.this, wDatas));
+                } else {
+                    mRecyclerView.setAdapter(mAdapter = new StoreAdapter(StoreActivity.this, mDatas));
+                }
+            }
+        });
+
+        mRecyclerView.requestFocus();
+    }
+
+    private void setData() {
         mDatas = DBUtil.getDaoSession().getStoreListDao().loadAll();
         wDatas = new ArrayList<>();
         for (StoreList mData : mDatas) {
@@ -54,24 +84,16 @@ public class StoreActivity extends BasicActivity {
             }
         }
         tv_warn.setText(wDatas.size() + " 种需要进货");
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mAdapter = new StoreAdapter(mDatas));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL_LIST));
+    }
 
-        cb_warn.setVisibility(View.VISIBLE);
-        cb_warn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mRecyclerView.setAdapter(mAdapter = new StoreAdapter(wDatas));
-                } else {
-                    mRecyclerView.setAdapter(mAdapter = new StoreAdapter(mDatas));
-                }
-            }
-        });
-
-        mRecyclerView.requestFocus();
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (mAdapter.isRefersh) {
+            mAdapter.isRefersh = false;
+            setData();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -86,6 +108,7 @@ public class StoreActivity extends BasicActivity {
             for (int i = 0; i < wDatas.size(); i++) {
                 if (wDatas.get(i).getBarCode() == code) {
                     mRecyclerView.scrollToPosition(i);
+                    mAdapter.setDefSelect(i);
                     et_search.setText("");
                     return true;
                 }
@@ -94,86 +117,12 @@ public class StoreActivity extends BasicActivity {
             for (int i = 0; i < mDatas.size(); i++) {
                 if (mDatas.get(i).getBarCode() == code) {
                     mRecyclerView.scrollToPosition(i);
+                    mAdapter.setDefSelect(i);
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.MyViewHolder> {
-
-        List<StoreList> sls;
-
-        public StoreAdapter(List<StoreList> sls) {
-            this.sls = sls;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            MyViewHolder holder = new MyViewHolder(LayoutInflater.from(StoreActivity.this).inflate(R.layout.item_store, parent, false));
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            final StoreList sl = sls.get(position);
-            holder.tv_code.setText("" + sl.getBarCode());
-            holder.tv_num.setText("库存：" + sl.getNumber() + " 售价：" + App.app.showPrice(sl.getPrice()));
-
-            final DrugInfo di = DBUtil.getDaoSession().getDrugInfoDao().load(sl.getBarCode());
-            holder.tv_name.setText(di.getName());
-            holder.tv_factory.setText(di.getFactory());
-
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    final NiftyDialogBuilder submitDia = NiftyDialogBuilder.getInstance(StoreActivity.this);
-                    submitDia.withTitle("确定要删除“" + di.getName() + "”吗？");
-                    submitDia.withButton1Text("取消", 0).setButton1Click(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            submitDia.dismiss();
-                        }
-                    });
-                    submitDia.withButton2Text("确定", 0).setButton2Click(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DBUtil.getDaoSession().getStoreListDao().delete(sl);
-                            mDatas.remove(sl);
-                            notifyDataSetChanged();
-
-                            submitDia.dismiss();
-                        }
-                    });
-                    submitDia.withMessage(null).withDuration(400);
-                    submitDia.isCancelable(false);
-                    submitDia.show();
-                    return false;
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return sls.size();
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_name, tv_code, tv_factory, tv_num;
-            ImageView iv_delete;
-
-            public MyViewHolder(View view) {
-                super(view);
-                tv_name = (TextView) view.findViewById(R.id.item_store_name);
-                tv_code = (TextView) view.findViewById(R.id.item_store_code);
-                tv_factory = (TextView) view.findViewById(R.id.item_store_factory);
-                tv_num = (TextView) view.findViewById(R.id.item_store_num);
-
-                iv_delete = (ImageView) view.findViewById(R.id.item_store_delete);
-                iv_delete.setVisibility(View.GONE);
-            }
-        }
     }
 
 }

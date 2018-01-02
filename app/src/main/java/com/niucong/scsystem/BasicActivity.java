@@ -26,6 +26,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.util.ScanGunKeyEventHelper;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,15 +82,15 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
         searchDrug(barcode);
     }
 
-//    public void onResume() {
-//        super.onResume();
-////        MobclickAgent.onResume(this);
-//    }
-//
-//    public void onPause() {
-//        super.onPause();
-////        MobclickAgent.onPause(this);
-//    }
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -142,6 +143,7 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
                 }
             }
         });
+
         iv_delete.setOnClickListener(new View.OnClickListener() {
 
             @Override
