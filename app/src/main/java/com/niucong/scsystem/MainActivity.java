@@ -1,5 +1,6 @@
 package com.niucong.scsystem;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -56,6 +57,7 @@ import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
 import com.niucong.scsystem.view.NiftyDialogBuilder;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -569,7 +571,12 @@ public class MainActivity extends BasicActivity
 //            timeDialog.setTitle("设置每天对账时间");
 //            timeDialog.show();
         } else if (id == R.id.nav_data) {// 导入/导出数据
-            settingDialog(1);
+            //6.0运行权限设置
+            if (!FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
+                    .permission.READ_EXTERNAL_STORAGE, 1) || !FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
+                    .permission.WRITE_EXTERNAL_STORAGE, 1)) {
+                settingDialog(1);
+            }
         } else if (id == R.id.nav_camera) {// 设置摄像头
             settingDialog(0);
         } else if (id == R.id.nav_help) {// 使用帮助
@@ -583,6 +590,15 @@ public class MainActivity extends BasicActivity
         return true;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
+            grantResults) {
+        if (requestCode == 1) {
+            settingDialog(1);
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     /**
      * 设置对话框：0摄像头、1导入/导出数据
      *
@@ -594,7 +610,8 @@ public class MainActivity extends BasicActivity
         final RadioButton rb1 = (RadioButton) settingView.findViewById(R.id.radioButton1);
         RadioButton rb2 = (RadioButton) settingView.findViewById(R.id.radioButton2);
 
-        final String SDCardPath = "/storage/usbotg/";//Environment.getExternalStorageDirectory() + File.separator;// 081C-9F49
+        //Environment.getExternalStorageDirectory();// /storage/usbotg、/storage/081C-9F49
+        final String SDCardPath = app.share.getStringMessage("SC", "USBPath", "/storage/usbotg") + File.separator;
 
         if (type == 0) {
             submitDia.withTitle("设置扫码摄像头");

@@ -1,6 +1,11 @@
 package com.niucong.scsystem.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.niucong.scsystem.app.App;
@@ -30,11 +35,11 @@ public class FileUtil {
         String newPath = SDCardPath + DATABASE_NAME;
         Log.i("mainactivity", "copyDBToSDcrad oldPath=" + oldPath);
         Log.i("mainactivity", "copyDBToSDcrad newPath=" + newPath);
-        File proFile = new File(newPath);
-        if (proFile.exists()) {
-            File myFile = new File(newPath + ymdhms.format(new Date(proFile.lastModified())));
-            proFile.renameTo(myFile);
-        }
+//        File proFile = new File(newPath);
+//        if (proFile.exists()) {
+//            File myFile = new File(newPath + ymdhms.format(new Date(proFile.lastModified())));
+//            proFile.renameTo(myFile);
+//        }
         return copyFile(oldPath, newPath + ymdhms.format(new Date()));
     }
 
@@ -43,25 +48,23 @@ public class FileUtil {
      */
     public boolean copySDcradToDB(Context c, String SDCardPath) {
         String DATABASE_NAME = "shunchang";
-        String oldPath = "file:///android_asset/" + DATABASE_NAME;// SDCardPath
+        String oldPath = SDCardPath + DATABASE_NAME;// "file:///android_asset/"
         String newPath = c.getDatabasePath(DATABASE_NAME).getPath();
         Log.i("mainactivity", "copySDcradToDB oldPath=" + oldPath);
         Log.i("mainactivity", "copySDcradToDB newPath=" + newPath);
-        return copyAssetsFile(c, DATABASE_NAME, newPath);
-//        copyFile(oldPath, newPath);
+//        return copyAssetsFile(c, DATABASE_NAME, newPath);
+        return copyFile(oldPath, newPath);
 //        File proFile = new File(oldPath);
 //        File myFile = new File(oldPath + ymdhms.format(new Date()));
 //        return proFile.renameTo(myFile);
     }
 
     /**
-     *  * 复制单个文件
-     *  *
-     *  * @param oldPath
-     *  *            String 原文件路径
-     *  * @param newPath
-     *  *            String 复制后路径
-     *  * @return boolean
+     * 复制单个文件
+     *
+     * @param oldFileName             String 原文件路径
+     * @param newPath                 String 复制后路径
+     * @return boolean
      *  
      */
     public static boolean copyAssetsFile(Context c, String oldFileName, String newPath) {
@@ -88,13 +91,12 @@ public class FileUtil {
     }
 
     /**
-     *  * 复制单个文件
-     *  *
-     *  * @param oldPath
-     *  *            String 原文件路径
-     *  * @param newPath
-     *  *            String 复制后路径
-     *  * @return boolean
+     * 复制单个文件
+     *  
+     *
+     * @param oldPath              String 原文件路径
+     * @param newPath              String 复制后路径
+     * @return boolean
      *  
      */
     public static boolean copyFile(String oldPath, String newPath) {
@@ -117,6 +119,7 @@ public class FileUtil {
                 return true;
             } else {
                 Log.i("mainactivity", "文件不存在");
+                MobclickAgent.reportError(App.app, "文件不存在" + oldPath);
             }
             return false;
         } catch (Exception e) {
@@ -126,4 +129,25 @@ public class FileUtil {
             return false;
         }
     }
+
+    /**
+     * Activity 6.0运行权限设置
+     *
+     * @param context
+     * @param activity
+     * @param permission 权限  Manifest.permission.
+     * @param type
+     */
+    public static boolean setPermission(Context context, Activity activity, String permission,
+                                        int type) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager
+                    .PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{permission}, type);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
