@@ -18,12 +18,14 @@ public class ScanGunKeyEventHelper {
     private StringBuffer mStringBufferResult;                  //扫码内容
     private boolean mCaps;                                     //大小写区分
     private final Handler mHandler;
+//    private final BluetoothAdapter mBluetoothAdapter;
     private final Runnable mScanningFishedRunnable;
     private OnScanSuccessListener mOnScanSuccessListener;
-    private String mDeviceName = "nuvoTon USB HID";//聚龙扫码枪型号名 MTK BT HID、USBKey Chip USBKey Module
+//    private String mDeviceName;//聚龙扫码枪型号名nuvoTon USB HID、MTK BT HID、USBKey Chip USBKey Module
 
     public ScanGunKeyEventHelper(OnScanSuccessListener onScanSuccessListener) {
         mOnScanSuccessListener = onScanSuccessListener;
+//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mStringBufferResult = new StringBuffer();
         mHandler = new Handler();
         mScanningFishedRunnable = new Runnable() {
@@ -146,6 +148,35 @@ public class ScanGunKeyEventHelper {
 //        return cfg.keyboard != Configuration.KEYBOARD_NOKEYS;
 //    }
 
+    /**
+     * 扫描枪是否连接
+     *
+     * @return
+     */
+//    public boolean hasScanGun() {
+//
+//        if (mBluetoothAdapter == null) {
+//            return false;
+//        }
+//
+//        Set<BluetoothDevice> blueDevices = mBluetoothAdapter.getBondedDevices();
+//
+//        if (blueDevices == null || blueDevices.size() <= 0) {
+//            return false;
+//        }
+//
+//        for (Iterator<BluetoothDevice> iterator = blueDevices.iterator(); iterator.hasNext(); ) {
+//            BluetoothDevice bluetoothDevice = iterator.next();
+//
+//            if (bluetoothDevice.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.PERIPHERAL) {
+//                mDeviceName = bluetoothDevice.getName();
+//                return isInputDeviceExist(mDeviceName);
+//            }
+//        }
+//        return false;
+//
+//    }
+
 
     /**
      * 输入设备是否存在
@@ -153,7 +184,7 @@ public class ScanGunKeyEventHelper {
      * @param deviceName
      * @return
      */
-    private boolean isInputDeviceExist(String deviceName) {
+    public boolean isInputDeviceExist(String deviceName) {
         int[] deviceIds = InputDevice.getDeviceIds();
 
         for (int id : deviceIds) {
@@ -164,7 +195,6 @@ public class ScanGunKeyEventHelper {
         return false;
     }
 
-
     /**
      * 是否为扫码枪事件(部分机型KeyEvent获取的名字错误);
      *
@@ -174,6 +204,7 @@ public class ScanGunKeyEventHelper {
     public boolean isScanGunEvent(KeyEvent event) {
         String deviceName = event.getDevice().getName();
         return deviceName.equals("MTK BT HID") || deviceName.equals("USBKey Chip USBKey Module");
+//        return event.getDevice().getName().equals(mDeviceName);
     }
 
 

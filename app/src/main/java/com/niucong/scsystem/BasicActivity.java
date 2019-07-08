@@ -1,7 +1,10 @@
 package com.niucong.scsystem;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -20,6 +23,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -41,6 +45,9 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
 
     protected boolean isTablet;
 
+    protected boolean isManualInput = true;// 是否手动输入
+    protected int searchType;// 搜索类型：0搜索、1名称、2厂家
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         isTablet = isTablet();
@@ -51,8 +58,30 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
         }
         super.onCreate(savedInstanceState);
 
+        registerBoradcastReceiver();
         mScanGunKeyEventHelper = new ScanGunKeyEventHelper(this);
     }
+
+    private void registerBoradcastReceiver() {
+        IntentFilter filter1 = new IntentFilter(
+                BluetoothAdapter.ACTION_STATE_CHANGED);
+        IntentFilter filter2 = new IntentFilter(
+                BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        registerReceiver(stateChangeReceiver, filter1);
+        registerReceiver(stateChangeReceiver, filter2);
+    }
+
+    private BroadcastReceiver stateChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                Toast.makeText(BasicActivity.this, "蓝牙设备连接状态已变更", Toast.LENGTH_SHORT).show();
+            } else if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+                Toast.makeText(BasicActivity.this, "蓝牙设备连接状态已变更", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     private boolean isTablet() {
         return getResources().getBoolean(R.bool.isTablet);
@@ -84,12 +113,22 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
 
     public void onResume() {
         super.onResume();
+//        if (!mScanGunKeyEventHelper.hasScanGun()) {
+//            Toast.makeText(this, "未检测到扫码枪设备", Toast.LENGTH_SHORT).show();
+//        }
         MobclickAgent.onResume(this);
     }
 
     public void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(stateChangeReceiver);
+        mScanGunKeyEventHelper.onDestroy();
     }
 
     @Override
@@ -125,6 +164,9 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
             @Override
             public void afterTextChanged(Editable s) {
                 String str = s.toString().trim();
+                if (isManualInput) {
+                    searchType = 0;
+                }
                 if (str.length() > 0) {
 //                    iv_delete.setVisibility(View.VISIBLE);
 //                    iv_scan.setVisibility(View.GONE);
@@ -252,6 +294,8 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
                             } else if (pc.getNamePY() != null && pc.getNamePY().startsWith(prefixString)) {
                                 newValues.add(pc);
                             } else if (pc.getNamePYF() != null && pc.getNamePYF().startsWith(prefixString)) {
+                                newValues.add(pc);
+                            } else if (pc.getFactory() != null && pc.getFactory().startsWith(prefixString)) {
                                 newValues.add(pc);
                             }
                         }

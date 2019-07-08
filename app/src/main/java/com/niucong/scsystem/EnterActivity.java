@@ -32,8 +32,8 @@ public class EnterActivity extends BasicActivity {
 
     private LinearLayout ll_old;
     private TextView tv_last_date, tv_last_num, tv_last_price, tv_store_num, tv_sell_price;
-    private EditText et_code, et_factory, et_warn, et_num, et_price_input, et_price;
-    private AutoCompleteTextView et_name;
+    private EditText et_code, et_warn, et_num, et_price_input, et_price;
+    private AutoCompleteTextView et_name, et_factory;
     private Button btn_send;
 
     private DrugInfo di;// 药品信息
@@ -69,7 +69,7 @@ public class EnterActivity extends BasicActivity {
     private void setView() {
         et_code = (EditText) findViewById(R.id.enter_code);
         et_name = (AutoCompleteTextView) findViewById(R.id.enter_name);
-        et_factory = (EditText) findViewById(R.id.enter_factory);
+        et_factory = (AutoCompleteTextView) findViewById(R.id.enter_factory);
 
         ll_old = (LinearLayout) findViewById(R.id.enter_last_info);
         tv_last_date = (TextView) findViewById(R.id.enter_last_date);
@@ -88,6 +88,7 @@ public class EnterActivity extends BasicActivity {
 
         SearchAdapter searchAdapter = new SearchAdapter(this, App.app.list);
         et_name.setAdapter(searchAdapter);
+        et_factory.setAdapter(searchAdapter);
 
         et_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -103,6 +104,9 @@ public class EnterActivity extends BasicActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String str = s.toString();
+                if (isManualInput) {
+                    searchType = 1;
+                }
                 if (str.contains("\n")) {
                     str = str.replace("\n", "");
                     et_name.setText(str);
@@ -125,6 +129,9 @@ public class EnterActivity extends BasicActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String str = s.toString();
+                if (isManualInput) {
+                    searchType = 2;
+                }
                 if (str.contains("\n")) {
                     str = str.replace("\n", "");
                     et_factory.setText(str);
@@ -350,7 +357,10 @@ public class EnterActivity extends BasicActivity {
 //                    .setAction("Action", null).show();
             return false;
         }
-        clearInput();
+        isManualInput = false;
+        if (searchType == 0) {
+            clearInput();
+        }
         di = DBUtil.getDaoSession().getDrugInfoDao().load(Long.valueOf(result));
         sl = DBUtil.getDaoSession().getStoreListDao().load(Long.valueOf(result));
         try {
@@ -361,17 +371,25 @@ public class EnterActivity extends BasicActivity {
         et_code.setText(result);
         et_search.setText("");
         if (di != null) {
-            et_factory.setText(di.getFactory());
-            et_name.setText(di.getName());
+            Log.d(TAG, "searchDrug1 isManualInput=" + isManualInput + ",searchType=" + searchType);
+            if (searchType == 0 || searchType == 2) {
+                et_factory.setText(di.getFactory());
+            }
+            Log.d(TAG, "searchDrug2 isManualInput=" + isManualInput + ",searchType=" + searchType);
+            if (searchType == 0 || searchType == 1) {
+                et_name.setText(di.getName());
+            }
         }
-        if (sl != null) {
+        Log.d(TAG, "searchDrug3 isManualInput=" + isManualInput + ",searchType=" + searchType);
+        if (sl != null && searchType == 0) {
             et_warn.setText("" + sl.getWarnNumber());
             tv_store_num.setText("库存数量：" + sl.getNumber());
             String price = App.app.showPrice(sl.getPrice());
             tv_sell_price.setText("销售价格：" + price);
             et_price.setText(price);
         }
-        if (er != null) {
+        Log.d(TAG, "searchDrug4 isManualInput=" + isManualInput + ",searchType=" + searchType);
+        if (er != null && searchType == 0) {
             ll_old.setVisibility(View.VISIBLE);
             tv_last_date.setText("上次进货时间：" + ymd.format(er.getEnterDate()));
             tv_last_num.setText("数量：" + er.getNumber());
@@ -383,6 +401,7 @@ public class EnterActivity extends BasicActivity {
         } else {
             et_name.requestFocus();
         }
+        isManualInput = true;
         return true;
     }
 

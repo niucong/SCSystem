@@ -1,6 +1,5 @@
 package com.niucong.scsystem;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -570,15 +569,15 @@ public class MainActivity extends BasicActivity
 //            }, mHourOfDay, mMinute, true);
 //            timeDialog.setTitle("设置每天对账时间");
 //            timeDialog.show();
-        } else if (id == R.id.nav_data) {// 导入/导出数据
-            //6.0运行权限设置
-            if (!FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
-                    .permission.READ_EXTERNAL_STORAGE, 1) || !FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
-                    .permission.WRITE_EXTERNAL_STORAGE, 1)) {
-                settingDialog(1);
-            }
-        } else if (id == R.id.nav_camera) {// 设置摄像头
-            settingDialog(0);
+//        } else if (id == R.id.nav_data) {// 导入/导出数据
+//            //6.0运行权限设置
+//            if (!FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
+//                    .permission.READ_EXTERNAL_STORAGE, 1) || !FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
+//                    .permission.WRITE_EXTERNAL_STORAGE, 1)) {
+//                settingDialog(1);
+//            }
+//        } else if (id == R.id.nav_camera) {// 设置摄像头
+//            settingDialog(0);
         } else if (id == R.id.nav_help) {// 使用帮助
             startActivity(new Intent(this, WebActivity.class));
         } else if (id == R.id.nav_about) {// 关于

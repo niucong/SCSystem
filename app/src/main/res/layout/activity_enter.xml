@@ -1,10 +1,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".EnterActivity">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:fitsSystemWindows="true"
+                                                 tools:context=".EnterActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -30,7 +30,7 @@
         <include
             layout="@layout/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                 android:hint="条形码"
                 android:inputType="number"
                 android:maxLength="17"
-                android:maxLines="1" />
+                android:maxLines="1"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="药品名称"
-                android:maxLines="1" />
+                android:maxLines="1"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -66,12 +66,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/enter_factory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="生产厂家"
-                android:maxLines="1" />
+                android:maxLines="1"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="上次进货时间：2016-11-02"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="数量：20"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/enter_last_price"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="价格：10"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -134,7 +134,7 @@
                     android:hint="提醒数量"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -145,7 +145,7 @@
                 android:layout_weight="1"
                 android:maxLines="1"
                 android:text="库存数量：0"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -160,7 +160,7 @@
                     android:hint="进货数量"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
@@ -184,7 +184,7 @@
                     android:hint="新进货价格"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -194,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="销售价格：0.0"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -209,7 +209,7 @@
                     android:hint="新销售价格"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
@@ -222,7 +222,7 @@
             android:layout_marginTop="16dp"
             android:text="保存"
             android:textColor="#88ff0000"
-            android:textSize="20sp" />
+            android:textSize="20sp"/>
 
     </LinearLayout>
 
