@@ -45,4 +45,10 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
 
     compile 'com.belerweb:pinyin4j:2.5.0'
+
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+
+    implementation 'com.alibaba:fastjson:1.2.49'
+    implementation 'com.yanzhenjie.andserver:api:2.0.2'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.1'
 }

@@ -294,8 +294,9 @@ public class EnterActivity extends BasicActivity {
             di.setFactory(str_factory);
             di.setNamePY(CnToSpell.getPinYin(str_name));
             di.setNamePYF(CnToSpell.getPinYinHeadChar(str_name));
-            sl.setBarCode(Long.valueOf(str_code));
+            di.setUpdateTime(System.currentTimeMillis());
 
+            sl.setBarCode(Long.valueOf(str_code));
             if (TextUtils.isEmpty(str_num)) {
                 str_num = "0";
             }
@@ -368,7 +369,9 @@ public class EnterActivity extends BasicActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        et_code.setText(result);
+        if (searchType == 0) {
+            et_code.setText(result);
+        }
         et_search.setText("");
         if (di != null) {
             Log.d(TAG, "searchDrug1 isManualInput=" + isManualInput + ",searchType=" + searchType);

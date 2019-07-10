@@ -10,6 +10,7 @@ public class StoreList {
     private Integer Number;
     private Integer Price;
     private Integer WarnNumber;
+    private long UpdateTime;
 
     public StoreList() {
     }
@@ -18,11 +19,12 @@ public class StoreList {
         this.BarCode = BarCode;
     }
 
-    public StoreList(long BarCode, Integer Number, Integer Price, Integer WarnNumber) {
+    public StoreList(long BarCode, Integer Number, Integer Price, Integer WarnNumber, long UpdateTime) {
         this.BarCode = BarCode;
         this.Number = Number;
         this.Price = Price;
         this.WarnNumber = WarnNumber;
+        this.UpdateTime = UpdateTime;
     }
 
     public long getBarCode() {
@@ -55,6 +57,14 @@ public class StoreList {
 
     public void setWarnNumber(Integer WarnNumber) {
         this.WarnNumber = WarnNumber;
+    }
+
+    public long getUpdateTime() {
+        return UpdateTime;
+    }
+
+    public void setUpdateTime(long UpdateTime) {
+        this.UpdateTime = UpdateTime;
     }
 
 }

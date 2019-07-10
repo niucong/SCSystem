@@ -9,7 +9,9 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -45,6 +47,11 @@ import com.gprinter.command.GpUtils;
 import com.gprinter.command.LabelCommand;
 import com.gprinter.io.GpDevice;
 import com.gprinter.service.GpPrintService;
+import com.niucong.scsystem.andserver.BluetoothChatService;
+import com.niucong.scsystem.andserver.ServerManager;
+import com.niucong.scsystem.andserver.controller.ApiController;
+import com.niucong.scsystem.andserver.util.Logger;
+import com.niucong.scsystem.andserver.util.NetUtils;
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.SellRecord;
@@ -72,7 +79,7 @@ public class MainActivity extends BasicActivity
     private String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
-    private TextView tv_total, nav_total, nav_warn;// , nav_time
+    private TextView tv_total, nav_title, nav_total, nav_warn;// , nav_time
     private Spinner sp;
     private RadioGroup rg;
     private CheckBox cb;
@@ -87,6 +94,8 @@ public class MainActivity extends BasicActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mServerManager.unRegister();
+        bluetoothChatService.stop();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
@@ -109,6 +118,7 @@ public class MainActivity extends BasicActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
+        nav_title = (TextView) headerView.findViewById(R.id.nav_title);
         nav_total = (TextView) headerView.findViewById(R.id.nav_total);
         nav_warn = (TextView) headerView.findViewById(R.id.nav_warn);
 
@@ -171,6 +181,15 @@ public class MainActivity extends BasicActivity
                 return false;
             }
         });
+
+        apiController = new ApiController();
+        // 开启wifi服务
+        mServerManager = new ServerManager(this);
+        mServerManager.register();
+        mServerManager.startServer();
+        // 开启蓝牙服务
+        bluetoothChatService = BluetoothChatService.getInstance(handler);
+        bluetoothChatService.start();
     }
 
     private void setPayType() {
@@ -275,6 +294,8 @@ public class MainActivity extends BasicActivity
             nav_warn.setVisibility(View.VISIBLE);
             nav_warn.setText(warn + " 种需要进货");
         }
+
+        nav_title.setText(getIpAddress());
     }
 
 //    @Override
@@ -517,6 +538,9 @@ public class MainActivity extends BasicActivity
         } else {
             super.onBackPressed();
         }
+        Logger.d("ipAddress=" + ipAddress);
+        Snackbar.make(mRecyclerView, getIpAddress(), Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -843,19 +867,19 @@ public class MainActivity extends BasicActivity
         esc.addText("Sample\n"); // 打印文字
         esc.addPrintAndLineFeed();
 
-		/* 打印文字 */
+        /* 打印文字 */
         esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);// 取消倍高倍宽
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);// 设置打印左对齐
         esc.addText("Print text\n"); // 打印文字
         esc.addText("Welcome to use SMARNET printer!\n"); // 打印文字
 
-		/* 打印繁体中文 需要打印机支持繁体字库 */
+        /* 打印繁体中文 需要打印机支持繁体字库 */
         String message = "佳博智匯票據打印機\n";
         // esc.addText(message,"BIG5");
         esc.addText(message, "GB2312");
         esc.addPrintAndLineFeed();
 
-		/* 绝对位置 具体详细信息请查看GP58编程手册 */
+        /* 绝对位置 具体详细信息请查看GP58编程手册 */
         esc.addText("智汇");
         esc.addSetHorAndVerMotionUnits((byte) 7, (byte) 0);
         esc.addSetAbsolutePrintPosition((short) 6);
@@ -864,13 +888,13 @@ public class MainActivity extends BasicActivity
         esc.addText("设备");
         esc.addPrintAndLineFeed();
 
-		/* 打印图片 */
+        /* 打印图片 */
         // esc.addText("Print bitmap!\n"); // 打印文字
         // Bitmap b = BitmapFactory.decodeResource(getResources(),
         // R.drawable.gprinter);
         // esc.addRastBitImage(b, b.getWidth(), 0); // 打印图片
 
-		/* 打印一维条码 */
+        /* 打印一维条码 */
         esc.addText("Print code128\n"); // 打印文字
         esc.addSelectPrintingPositionForHRICharacters(EscCommand.HRI_POSITION.BELOW);//
         // 设置条码可识别字符位置在条码下方
@@ -879,9 +903,9 @@ public class MainActivity extends BasicActivity
         esc.addCODE128(esc.genCodeB("SMARNET")); // 打印Code128码
         esc.addPrintAndLineFeed();
 
-		/*
+        /*
          * QRCode命令打印 此命令只在支持QRCode命令打印的机型才能使用。 在不支持二维码指令打印的机型上，则需要发送二维条码图片
-		 */
+         */
         esc.addText("Print QRcode\n"); // 打印文字
         esc.addSelectErrorCorrectionLevelForQRCode((byte) 0x31); // 设置纠错等级
         esc.addSelectSizeOfModuleForQRCode((byte) 3);// 设置qrcode模块大小
@@ -889,7 +913,7 @@ public class MainActivity extends BasicActivity
         esc.addPrintQRCode();// 打印QRCode
         esc.addPrintAndLineFeed();
 
-		/* 打印文字 */
+        /* 打印文字 */
         esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);// 设置打印左对齐
         esc.addText("Completed!\r\n"); // 打印结束
         esc.addGeneratePlus(LabelCommand.FOOT.F5, (byte) 255, (byte) 255);
@@ -933,6 +957,64 @@ public class MainActivity extends BasicActivity
             }
         }
         return state;
+    }
+
+    private ApiController apiController;
+
+    private BluetoothChatService bluetoothChatService;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case BluetoothChatService.BLUE_TOOTH_READ: {
+//                case BluetoothChatService1.MESSAGE_READ: {
+                    byte[] readBuf = (byte[]) msg.obj;
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    Logger.d(readMessage);
+                    bluetoothChatService.sendData(apiController.getBluetoothResult(readMessage).getBytes());
+                }
+                break;
+            }
+        }
+    };
+
+    private ServerManager mServerManager;
+    private String ipAddress;
+
+    public String getIpAddress() {
+//        if (TextUtils.isEmpty(ipAddress) || "0.0.0.0".equals(ipAddress)) {
+        try {
+            ipAddress = NetUtils.getLocalIPAddress().getHostAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        }
+        Logger.d("ipAddress=" + ipAddress);
+        return ipAddress;
+    }
+
+    /**
+     * Start notify.
+     */
+    public void onServerStart(String ip) {
+        ipAddress = ip;
+        Snackbar.make(mRecyclerView, getIpAddress(), Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    /**
+     * Error notify.
+     */
+    public void onServerError(String message) {
+
+    }
+
+    /**
+     * Stop notify.
+     */
+    public void onServerStop() {
+
     }
 
 }

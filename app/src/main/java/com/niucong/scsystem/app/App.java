@@ -2,6 +2,7 @@ package com.niucong.scsystem.app;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.umeng.analytics.MobclickAgent;
 
@@ -27,6 +28,8 @@ public class App extends Application {
         share = new AppSharedPreferences(this);
 
         MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, "581bdb7fe88bad6afb00332c", ""));
+
+        Stetho.initializeWithDefaults(this);
     }
 
     /**
@@ -54,4 +57,5 @@ public class App extends Application {
         float pf = price;
         return new Formatter().format("%.2f", pf / 100).toString();
     }
+
 }

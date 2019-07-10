@@ -18,7 +18,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
  * Master of DAO (schema version 1): knows all DAOs.
  */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 2;
+    public static final int SCHEMA_VERSION = 3;
 
     /**
      * Creates underlying database table using DAOs.
@@ -64,11 +64,31 @@ public class DaoMaster extends AbstractDaoMaster {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-            if (oldVersion == 1 && newVersion == 2) {
+            if (oldVersion == 2 && newVersion == 3) {
+                twoToThree(db);
+            } else if (oldVersion == 1 && newVersion == 3) {
                 oneToTwo(db);
+                twoToThree(db);
             } else {
                 dropAllTables(db, true);
                 onCreate(db);
+            }
+        }
+
+        private void twoToThree(SQLiteDatabase db) {
+            db.execSQL("alter table " + DrugInfoDao.TABLENAME + " add UPDATE_TIME LONG");
+            db.execSQL("alter table " + StoreListDao.TABLENAME + " add UPDATE_TIME LONG");
+
+            Cursor cursor = db.rawQuery("select * from  " + DrugInfoDao.TABLENAME, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    db.execSQL("update " + DrugInfoDao.TABLENAME
+                            + " set UPDATE_TIME = ? where BAR_CODE = ?", new Object[]{
+                            System.currentTimeMillis(), cursor.getLong(0)});
+                    db.execSQL("update " + StoreListDao.TABLENAME
+                            + " set UPDATE_TIME = ? where BAR_CODE = ?", new Object[]{
+                            System.currentTimeMillis(), cursor.getLong(0)});
+                } while (cursor.moveToNext());
             }
         }
 

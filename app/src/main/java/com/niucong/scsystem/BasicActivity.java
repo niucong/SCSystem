@@ -233,6 +233,7 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
                 holder = new ViewHolder();
                 convertView = LayoutInflater.from(context).inflate(R.layout.item_search, null);
                 holder.tv_name = (TextView) convertView.findViewById(R.id.item_search_name);
+                holder.tv_bar = (TextView) convertView.findViewById(R.id.item_search_bar);
                 holder.tv_factory = (TextView) convertView.findViewById(R.id.item_search_factory);
                 convertView.setTag(holder);
             } else {
@@ -240,6 +241,7 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
             }
             final DrugInfo di = list.get(position);
             holder.tv_name.setText(di.getName());
+            holder.tv_bar.setText("" + di.getBarCode());
             holder.tv_factory.setText(di.getFactory());
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -253,7 +255,7 @@ public abstract class BasicActivity extends AppCompatActivity implements View.On
         }
 
         class ViewHolder {
-            TextView tv_name, tv_factory;
+            TextView tv_name, tv_bar, tv_factory;
         }
 
         @Override

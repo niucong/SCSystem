@@ -115,6 +115,10 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".andserver.CoreService"
+            android:exported="false"/>
+
         <!--<meta-data-->
             <!--android:name="android.max_aspect"-->
             <!--android:value="2.1"/>-->
