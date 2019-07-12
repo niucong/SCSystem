@@ -79,8 +79,12 @@ public class StoreActivity extends BasicActivity {
         mDatas = DBUtil.getDaoSession().getStoreListDao().loadAll();
         wDatas = new ArrayList<>();
         for (StoreList mData : mDatas) {
-            if (mData.getNumber() < mData.getWarnNumber()) {
-                wDatas.add(mData);
+            try {
+                if (mData.getNumber() < mData.getWarnNumber()) {
+                    wDatas.add(mData);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         tv_warn.setText(wDatas.size() + " 种需要进货");

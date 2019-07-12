@@ -1,5 +1,6 @@
 package com.niucong.scsystem;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,7 +35,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -58,12 +58,12 @@ import com.niucong.scsystem.dao.SellRecord;
 import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
-import com.niucong.scsystem.util.FileUtil;
 import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
-import com.niucong.scsystem.view.NiftyDialogBuilder;
 
-import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -283,8 +283,12 @@ public class MainActivity extends BasicActivity
         List<StoreList> wDatas = getDaoSession().getStoreListDao().loadAll();
         int warn = 0;
         for (StoreList mData : wDatas) {
-            if (mData.getNumber() < mData.getWarnNumber()) {
-                warn++;
+            try {
+                if (mData.getNumber() < mData.getWarnNumber()) {
+                    warn++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         Log.d(TAG, "setNavTip warn=" + warn);
@@ -295,7 +299,7 @@ public class MainActivity extends BasicActivity
             nav_warn.setText(warn + " 种需要进货");
         }
 
-        nav_title.setText(getIpAddress());
+        nav_title.setText(getIpAddress() + "\n" + getBtAddressByReflection());
     }
 
 //    @Override
@@ -567,41 +571,6 @@ public class MainActivity extends BasicActivity
                 intent.putExtra("connect.status", state);
                 this.startActivity(intent);
             }
-//        } else if (id == R.id.nav_time) {
-//            Calendar time = Calendar.getInstance();
-//            Dialog timeDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
-//
-//                @Override
-//                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                    mHourOfDay = hourOfDay;
-//                    mMinute = minute;
-//                    String tStr = "设置对账时间（";
-//                    if (hourOfDay < 10) {
-//                        tStr += "0" + hourOfDay;
-//                    } else {
-//                        tStr += hourOfDay;
-//                    }
-//                    if (minute < 10) {
-//                        tStr += "：0" + minute;
-//                    } else {
-//                        tStr += "：" + minute;
-//                    }
-//                    item.setTitle(tStr + "）");
-//                    app.share.saveIntMessage("SC", "hourOfDay", hourOfDay);
-//                    app.share.saveIntMessage("SC", "minute", minute);
-//                }
-//            }, mHourOfDay, mMinute, true);
-//            timeDialog.setTitle("设置每天对账时间");
-//            timeDialog.show();
-//        } else if (id == R.id.nav_data) {// 导入/导出数据
-//            //6.0运行权限设置
-//            if (!FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
-//                    .permission.READ_EXTERNAL_STORAGE, 1) || !FileUtil.setPermission(MainActivity.this, MainActivity.this, Manifest
-//                    .permission.WRITE_EXTERNAL_STORAGE, 1)) {
-//                settingDialog(1);
-//            }
-//        } else if (id == R.id.nav_camera) {// 设置摄像头
-//            settingDialog(0);
         } else if (id == R.id.nav_help) {// 使用帮助
             startActivity(new Intent(this, WebActivity.class));
         } else if (id == R.id.nav_about) {// 关于
@@ -611,137 +580,6 @@ public class MainActivity extends BasicActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
-            grantResults) {
-        if (requestCode == 1) {
-            settingDialog(1);
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * 设置对话框：0摄像头、1导入/导出数据
-     *
-     * @param type
-     */
-    private void settingDialog(final int type) {
-        final NiftyDialogBuilder submitDia = NiftyDialogBuilder.getInstance(this);
-        View settingView = LayoutInflater.from(this).inflate(R.layout.dialog_setting, null);
-        final RadioButton rb1 = (RadioButton) settingView.findViewById(R.id.radioButton1);
-        RadioButton rb2 = (RadioButton) settingView.findViewById(R.id.radioButton2);
-
-        //Environment.getExternalStorageDirectory();// /storage/usbotg、/storage/081C-9F49
-        final String SDCardPath = app.share.getStringMessage("SC", "USBPath", "/storage/usbotg") + File.separator;
-
-        if (type == 0) {
-            submitDia.withTitle("设置扫码摄像头");
-            if (app.share.getIntMessage("SC", "CameraId", 0) == 0) {
-                rb1.setChecked(true);
-            } else {
-                rb2.setChecked(true);
-            }
-        } else {
-            submitDia.withTitle("导入/导出数据");
-            rb1.setText("导入数据");
-            rb2.setText("导出数据");
-            final TextView tv_tip = (TextView) settingView.findViewById(R.id.dialog_tip);
-            tv_tip.setVisibility(View.VISIBLE);
-            tv_tip.setText("请确保" + SDCardPath + "目录下有shunchang文件，同时应用内数据将被覆盖！");
-            ((RadioGroup) settingView.findViewById(R.id.radioGroup)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    switch (checkedId) {
-                        case R.id.radioButton1:
-                            tv_tip.setText("请确保" + SDCardPath + "目录下有shunchang文件，同时应用内数据将被覆盖！");
-                            break;
-                        case R.id.radioButton2:
-                            tv_tip.setText("数据将导出到" + SDCardPath + "目录下");
-                            break;
-                    }
-                }
-            });
-            submitDia.withButton1Text("取消", 0).setButton1Click(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    submitDia.dismiss();
-                }
-            });
-        }
-
-        submitDia.withButton2Text("确定", 0).setButton2Click(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (type == 0) {
-                    if (rb1.isChecked()) {
-                        app.share.saveIntMessage("SC", "CameraId", 0);
-                        Snackbar.make(mRecyclerView, "已切换到后置摄像头", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    } else {
-                        app.share.saveIntMessage("SC", "CameraId", 1);
-                        Snackbar.make(mRecyclerView, "已切换到前置摄像头", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                } else {
-                    if (rb1.isChecked()) {
-//                        File f = new File(SDCardPath + "shunchang");
-//                        if (f.exists()) {
-                        Snackbar.make(mRecyclerView, "正在导入数据", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                final boolean flag = new FileUtil().copySDcradToDB(MainActivity.this, SDCardPath);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (flag) {
-                                            Snackbar.make(mRecyclerView, "数据导入成功", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                        } else {
-                                            Snackbar.make(mRecyclerView, "数据导入失败", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                        }
-                                    }
-                                });
-                            }
-                        }.start();
-//                        } else {
-//                            Snackbar.make(mRecyclerView, "所导入的数据文件不存在", Snackbar.LENGTH_LONG)
-//                                    .setAction("Action", null).show();
-//                        }
-                    } else {
-                        Snackbar.make(mRecyclerView, "正在导出数据", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                final boolean flag = new FileUtil().copyDBToSDcrad(MainActivity.this, SDCardPath);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (flag) {
-                                            Snackbar.make(mRecyclerView, "数据导出成功", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                        } else {
-                                            Snackbar.make(mRecyclerView, "数据导出失败", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                        }
-                                    }
-                                });
-                            }
-                        }.start();
-                    }
-                }
-                submitDia.dismiss();
-            }
-        });
-        submitDia.setCustomView(settingView, this);
-        submitDia.withMessage(null).withDuration(400);
-        submitDia.isCancelable(false);
-        submitDia.show();
     }
 
     private GpService mGpService = null;
@@ -960,6 +798,7 @@ public class MainActivity extends BasicActivity
     }
 
     private ApiController apiController;
+    public static String result = "";
 
     private BluetoothChatService bluetoothChatService;
     private Handler handler = new Handler() {
@@ -968,16 +807,46 @@ public class MainActivity extends BasicActivity
             super.handleMessage(msg);
             switch (msg.what) {
                 case BluetoothChatService.BLUE_TOOTH_READ: {
-//                case BluetoothChatService1.MESSAGE_READ: {
-                    byte[] readBuf = (byte[]) msg.obj;
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    Logger.d(readMessage);
-                    bluetoothChatService.sendData(apiController.getBluetoothResult(readMessage).getBytes());
+                    bluetoothChatService.sendData(apiController.getBluetoothResult(result).getBytes());
                 }
                 break;
             }
         }
     };
+
+    /**
+     * 获取蓝牙地址
+     *
+     * @return
+     */
+    public String getBtAddressByReflection() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Field field = null;
+        try {
+            field = BluetoothAdapter.class.getDeclaredField("mService");
+            field.setAccessible(true);
+            Object bluetoothManagerService = field.get(bluetoothAdapter);
+            if (bluetoothManagerService == null) {
+                return null;
+            }
+            Method method = bluetoothManagerService.getClass().getMethod("getAddress");
+            if (method != null) {
+                Object obj = method.invoke(bluetoothManagerService);
+                if (obj != null) {
+                    return obj.toString();
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     private ServerManager mServerManager;
     private String ipAddress;

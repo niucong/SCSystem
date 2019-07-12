@@ -6,26 +6,6 @@
     android:background="#ffffff"
     android:orientation="vertical" >
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton
-            android:text="使用后置摄像头"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:id="@+id/radioButton1" />
-        <RadioButton
-            android:text="使用前置摄像头"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/radioButton2" />
-    </RadioGroup>
-
     <TextView
         android:id="@+id/dialog_tip"
         android:layout_width="wrap_content"
