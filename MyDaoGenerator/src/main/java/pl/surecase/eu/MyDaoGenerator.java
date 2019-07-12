@@ -17,6 +17,7 @@ public class MyDaoGenerator {
         drugInfo.addStringProperty("Factory");
         drugInfo.addStringProperty("NamePY").notNull();
         drugInfo.addStringProperty("NamePYF").notNull();
+        drugInfo.addLongProperty("UpdateTime").notNull();
 
         Entity storeList = schema.addEntity("StoreList");
         storeList.setTableName("StoreList");
@@ -24,6 +25,7 @@ public class MyDaoGenerator {
         storeList.addIntProperty("Number");
         storeList.addIntProperty("Price");
         storeList.addIntProperty("WarnNumber");
+        storeList.addLongProperty("UpdateTime").notNull();
 
         Entity enterRecord = schema.addEntity("EnterRecord");
         enterRecord.setTableName("EnterRecord");
