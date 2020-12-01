@@ -30,11 +30,19 @@
             android:id="@+id/main_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="合计：0.0"
             android:textColor="#ff0000"
             android:textSize="24sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/main_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#0000ff"
+            android:textSize="20sp" />
 
         <CheckBox
             android:id="@+id/main_print"
@@ -46,54 +54,54 @@
             android:textSize="16sp"
             android:visibility="gone" />
 
-        <RadioGroup
-            android:id="@+id/main_pay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
+<!--        <RadioGroup-->
+<!--            android:id="@+id/main_pay"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:visibility="gone">-->
 
-            <RadioButton
-                android:id="@+id/main_cash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="现金"
-                android:textSize="18sp" />
+<!--            <RadioButton-->
+<!--                android:id="@+id/main_cash"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:checked="true"-->
+<!--                android:text="现金"-->
+<!--                android:textSize="18sp" />-->
 
-            <RadioButton
-                android:id="@+id/main_wechat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="微信"
-                android:textSize="18sp" />
+<!--            <RadioButton-->
+<!--                android:id="@+id/main_wechat"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="微信"-->
+<!--                android:textSize="18sp" />-->
 
-            <RadioButton
-                android:id="@+id/main_alipay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="支付宝"
-                android:textSize="18sp" />
+<!--            <RadioButton-->
+<!--                android:id="@+id/main_alipay"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="支付宝"-->
+<!--                android:textSize="18sp" />-->
 
-            <RadioButton
-                android:id="@+id/main_card"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="刷卡"
-                android:textSize="18sp" />
-        </RadioGroup>
+<!--            <RadioButton-->
+<!--                android:id="@+id/main_card"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="刷卡"-->
+<!--                android:textSize="18sp" />-->
+<!--        </RadioGroup>-->
 
-        <Spinner
-            android:id="@+id/main_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:visibility="gone" />
+<!--        <Spinner-->
+<!--            android:id="@+id/main_spinner"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:visibility="gone" />-->
 
         <Button
             android:id="@+id/main_btn"

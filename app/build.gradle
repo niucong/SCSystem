@@ -14,39 +14,63 @@ android {
         manifestPlaceholders = ["UMENG_APPKEY": "581bdb7fe88bad6afb00332c"]
     }
 
+    signingConfigs {
+        release {
+            storeFile file('sc.jks')
+            storePassword "693623533"
+            keyAlias "sc"
+            keyPassword "693623533"
+        }
+        debug {
+            storeFile file('sc.jks')
+            storePassword "693623533"
+            keyAlias "sc"
+            keyPassword "693623533"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:design:27.0.2'
-    compile 'com.android.support:recyclerview-v7:27.0.2'
-    compile 'com.android.support:support-v4:27.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.android.support:recyclerview-v7:27.0.2'
+    implementation 'com.android.support:support-v4:27.0.2'
 
-    testCompile 'junit:junit:4.12'
+//    testImplementation 'junit:junit:4.12'
 
-    compile 'com.journeyapps:zxing-android-embedded:3.4.0@aar'
-    compile 'com.google.zxing:core:3.3.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.4.0@aar'
+    implementation 'com.google.zxing:core:3.3.0'
 
-    compile 'de.greenrobot:greendao:1.3.7'
-    compile 'com.jakewharton:butterknife:8.2.1'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'de.greenrobot:greendao:1.3.7'
+    implementation 'com.jakewharton:butterknife:8.2.1'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
 
-    compile 'com.umeng.analytics:analytics:latest.integration'
+    implementation 'com.umeng.analytics:analytics:latest.integration'
 
-    compile 'com.belerweb:pinyin4j:2.5.0'
+    implementation 'com.belerweb:pinyin4j:2.5.0'
 
     implementation 'com.facebook.stetho:stetho:1.5.0'
+
+    implementation 'org.greenrobot:greendao:3.2.2'
 
     implementation 'com.alibaba:fastjson:1.2.49'
     implementation 'com.yanzhenjie.andserver:api:2.0.2'
