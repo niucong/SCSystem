@@ -9,15 +9,15 @@
         <item
             android:id="@+id/nav_stock"
             android:title="查看库存"/>
-        <item
-            android:id="@+id/nav_enterList"
-            android:title="进货记录"/>
-        <item
-            android:id="@+id/nav_statistics"
-            android:title="销售记录"/>
-        <item
-            android:id="@+id/nav_destory"
-            android:title="报损处理"/>
+<!--        <item-->
+<!--            android:id="@+id/nav_enterList"-->
+<!--            android:title="进货记录"/>-->
+<!--        <item-->
+<!--            android:id="@+id/nav_statistics"-->
+<!--            android:title="销售记录"/>-->
+<!--        <item-->
+<!--            android:id="@+id/nav_destory"-->
+<!--            android:title="报损处理"/>-->
     </group>
 
     <item android:title="其它">

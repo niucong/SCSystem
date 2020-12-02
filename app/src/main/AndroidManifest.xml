@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_STORAGE" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+<!--    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>-->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.hardware.usb.accessory"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -109,8 +109,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MEDIA_REMOVED"/>
                 <action android:name="android.intent.action.MEDIA_MOUNTED"/>
-                <action android:name="android.intent.action.MEDIA_REMOVED"/>
-                <action android:name="android.intent.action.MEDIA_REMOVED"/>
+<!--                <action android:name="android.intent.action.MEDIA_REMOVED"/>-->
+<!--                <action android:name="android.intent.action.MEDIA_REMOVED"/>-->
                 <data android:scheme="file"></data>
             </intent-filter>
         </receiver>

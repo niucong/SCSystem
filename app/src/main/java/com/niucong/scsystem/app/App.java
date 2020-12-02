@@ -1,11 +1,16 @@
 package com.niucong.scsystem.app;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Environment;
 
 import com.facebook.stetho.Stetho;
+import com.niucong.scsystem.andserver.util.FileUtils;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.umeng.analytics.MobclickAgent;
+import com.yanzhenjie.andserver.util.IOUtils;
 
+import java.io.File;
 import java.util.Formatter;
 import java.util.List;
 
@@ -21,6 +26,8 @@ public class App extends Application {
     public List<DrugInfo> list;
     public boolean refresh;
 
+    private File mRootDir;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,6 +37,24 @@ public class App extends Application {
         MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, "581bdb7fe88bad6afb00332c", ""));
 
         Stetho.initializeWithDefaults(this);
+
+        initRootPath(this);
+    }
+
+    public File getRootDir() {
+        return mRootDir;
+    }
+
+    private void initRootPath(Context context) {
+        if (mRootDir != null) return;
+
+        if (FileUtils.storageAvailable()) {
+            mRootDir = Environment.getExternalStorageDirectory();
+        } else {
+            mRootDir = context.getFilesDir();
+        }
+        mRootDir = new File(mRootDir, "AndServer");
+        IOUtils.createFolder(mRootDir);
     }
 
     /**

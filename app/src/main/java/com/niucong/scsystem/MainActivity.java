@@ -14,14 +14,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -31,15 +23,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.gprinter.aidl.GpService;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.GpCom;
@@ -47,27 +44,26 @@ import com.gprinter.command.GpUtils;
 import com.gprinter.command.LabelCommand;
 import com.gprinter.io.GpDevice;
 import com.gprinter.service.GpPrintService;
-import com.niucong.scsystem.andserver.BluetoothChatService;
+//import com.niucong.scsystem.andserver.BluetoothChatService;
 import com.niucong.scsystem.andserver.ServerManager;
-import com.niucong.scsystem.andserver.controller.ApiController;
+//import com.niucong.scsystem.andserver.controller.ApiController;
 import com.niucong.scsystem.andserver.util.Logger;
 import com.niucong.scsystem.andserver.util.NetUtils;
 import com.niucong.scsystem.app.App;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.SellRecord;
-import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
 import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
+import com.yanzhenjie.loading.dialog.LoadingDialog;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -79,9 +75,9 @@ public class MainActivity extends BasicActivity
     private String TAG = "MainActivity";
 
     private RecyclerView mRecyclerView;
-    private TextView tv_total, nav_title, nav_total, nav_warn;// , nav_time
-    private Spinner sp;
-    private RadioGroup rg;
+    private TextView tv_total, nav_title, nav_total, nav_warn, main_ip;// , nav_time
+    //    private Spinner sp;
+//    private RadioGroup rg;
     private CheckBox cb;
 
     private List<SellRecord> uRecords;
@@ -95,7 +91,7 @@ public class MainActivity extends BasicActivity
     protected void onDestroy() {
         super.onDestroy();
         mServerManager.unRegister();
-        bluetoothChatService.stop();
+//        bluetoothChatService.stop();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
@@ -150,9 +146,10 @@ public class MainActivity extends BasicActivity
 
         cb = (CheckBox) findViewById(R.id.main_print);
         cb.setVisibility(View.VISIBLE);
-        sp = (Spinner) findViewById(R.id.main_spinner);
-        rg = (RadioGroup) findViewById(R.id.main_pay);
-        setPayType();
+//        sp = (Spinner) findViewById(R.id.main_spinner);
+//        rg = (RadioGroup) findViewById(R.id.main_pay);
+//        setPayType();
+        main_ip = (TextView) findViewById(R.id.main_ip);
         tv_total = (TextView) findViewById(R.id.main_total);
         findViewById(R.id.main_btn).setOnClickListener(this);
         mRecyclerView.requestFocus();
@@ -182,125 +179,166 @@ public class MainActivity extends BasicActivity
             }
         });
 
-        apiController = new ApiController();
+//        apiController = new ApiController();
         // 开启wifi服务
         mServerManager = new ServerManager(this);
         mServerManager.register();
-        mServerManager.startServer();
-        // 开启蓝牙服务
-        bluetoothChatService = BluetoothChatService.getInstance(handler);
-        bluetoothChatService.start();
+//        mServerManager.startServer();
+
+//        // 开启蓝牙服务
+//        bluetoothChatService = BluetoothChatService.getInstance(handler);
+//        bluetoothChatService.start();
+
+        // + "\n\n蓝牙地址：" + getBtAddressByReflection()
+        nav_title.setText("IP地址：" + getIpAddress());
+        main_ip.setText(getIpAddress());
+
     }
 
-    private void setPayType() {
-        if (isTablet) {
-            rg.setVisibility(View.VISIBLE);
-            rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    switch (checkedId) {
-                        case R.id.main_cash:
-                            payType = 0;
-                            break;
-                        case R.id.main_wechat:
-                            payType = 1;
-                            break;
-                        case R.id.main_alipay:
-                            payType = 2;
-                            break;
-                        case R.id.main_card:
-                            payType = 3;
-                            break;
-                    }
-                }
-            });
-        } else {
-            sp.setVisibility(View.VISIBLE);
-            List<String> list = new ArrayList<String>();
-            list.add("现金");
-            list.add("微信");
-            list.add("支付宝");
-            list.add("刷卡");
-            ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            sp.setAdapter(adapter);
-            sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    payType = position;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        }
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (event.getDeviceId() == KeyCharacterMap.VIRTUAL_KEYBOARD) {//如果是虚拟键盘则不截获输入事件
+//            return false;
+//        }
+//        InputDevice inputDevice = InputDevice.getDevice(event.getDeviceId());
+//        Log.e("key", "onKeyDown: InputDevice:name=" +  inputDevice.getName()+",productId="+inputDevice.getProductId()+",VendorId="+ inputDevice.getVendorId());
+//        Log.e("key", "onKeyDown: keyCode=" + keyCode + "String=" + KeyEvent.keyCodeToString(keyCode));
+////        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {// 按下遥控器左键
+////
+////            return true;
+////        }
+////        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {// 按下遥控器右键
+////
+////            return true;
+////        }
+////        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {// 按下遥控器上键
+////
+////            return true;
+////        }
+////        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {// 按下遥控器下键
+////
+////            return true;
+////        }
+////        if (keyCode == KeyEvent.KEYCODE_BACK) {// 按下遥控器返回键
+////
+////            return true;
+////        }
+////        if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)) {// 按下遥控器OK键
+////
+////            return true;
+////        }
+//        //监听键盘以及二维码输入
+//        return true;//截获事件
+//    }
+//    private void setPayType() {
+//        if (isTablet) {
+//            rg.setVisibility(View.VISIBLE);
+//            rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                    switch (checkedId) {
+//                        case R.id.main_cash:
+//                            payType = 0;
+//                            break;
+//                        case R.id.main_wechat:
+//                            payType = 1;
+//                            break;
+//                        case R.id.main_alipay:
+//                            payType = 2;
+//                            break;
+//                        case R.id.main_card:
+//                            payType = 3;
+//                            break;
+//                    }
+//                }
+//            });
+//        } else {
+//            sp.setVisibility(View.VISIBLE);
+//            List<String> list = new ArrayList<String>();
+//            list.add("现金");
+//            list.add("微信");
+//            list.add("支付宝");
+//            list.add("刷卡");
+//            ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            sp.setAdapter(adapter);
+//            sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    payType = position;
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
+//        }
+//    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setNavTip();
+//        setNavTip();
         if (App.app.refresh) {
             App.app.refresh = false;
             setSearchBar(this, true);
         }
     }
 
-    private void setNavTip() {
-        try {
+//    private void setNavTip() {
+//        try {
+////            SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+////            SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+////            String ms = ymd.format(new Date());
+////            if (mHourOfDay < 10) {
+////                ms += " 0" + mHourOfDay;
+////            } else {
+////                ms += " " + mHourOfDay;
+////            }
+////            if (mMinute < 10) {
+////                ms += ":0" + mMinute;
+////            } else {
+////                ms += ":" + mMinute;
+////            }
+////            ms += ":00";
+////            Date ed = ymdhms.parse(ms);// 今天结账时间
+////            Date sd = new Date(ed.getTime() - 24 * 60 * 60 * 1000);// 昨天结账时间
+////            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(sd), SellRecordDao.Properties.SellDate.le(ed)).orderDesc(SellRecordDao.Properties.SellDate).list();
+//
 //            SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-//            SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            String ms = ymd.format(new Date());
-//            if (mHourOfDay < 10) {
-//                ms += " 0" + mHourOfDay;
-//            } else {
-//                ms += " " + mHourOfDay;
+//            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(ymd.parse(ymd.format(new Date())))).orderDesc(SellRecordDao.Properties.SellDate).list();
+//            int total = 0;
+//            for (SellRecord mData : tDatas) {
+//                total += mData.getPrice() * mData.getNumber();
 //            }
-//            if (mMinute < 10) {
-//                ms += ":0" + mMinute;
-//            } else {
-//                ms += ":" + mMinute;
+//            Log.d(TAG, "setNavTip total=" + total);
+//            nav_total.setText("今日销售额：" + app.showPrice(total));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        List<StoreList> wDatas = getDaoSession().getStoreListDao().loadAll();
+//        int warn = 0;
+//        for (StoreList mData : wDatas) {
+//            try {
+//                if (mData.getNumber() < mData.getWarnNumber()) {
+//                    warn++;
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
 //            }
-//            ms += ":00";
-//            Date ed = ymdhms.parse(ms);// 今天结账时间
-//            Date sd = new Date(ed.getTime() - 24 * 60 * 60 * 1000);// 昨天结账时间
-//            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(sd), SellRecordDao.Properties.SellDate.le(ed)).orderDesc(SellRecordDao.Properties.SellDate).list();
-
-            SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-            List<SellRecord> tDatas = getDaoSession().getSellRecordDao().queryBuilder().where(SellRecordDao.Properties.SellDate.ge(ymd.parse(ymd.format(new Date())))).orderDesc(SellRecordDao.Properties.SellDate).list();
-            int total = 0;
-            for (SellRecord mData : tDatas) {
-                total += mData.getPrice() * mData.getNumber();
-            }
-            Log.d(TAG, "setNavTip total=" + total);
-            nav_total.setText("今日销售额：" + app.showPrice(total));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        List<StoreList> wDatas = getDaoSession().getStoreListDao().loadAll();
-        int warn = 0;
-        for (StoreList mData : wDatas) {
-            try {
-                if (mData.getNumber() < mData.getWarnNumber()) {
-                    warn++;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        Log.d(TAG, "setNavTip warn=" + warn);
-        if (warn == 0) {
-            nav_warn.setVisibility(View.GONE);
-        } else {
-            nav_warn.setVisibility(View.VISIBLE);
-            nav_warn.setText(warn + " 种需要进货");
-        }
-
-        nav_title.setText(getIpAddress() + "\n" + getBtAddressByReflection());
-    }
+//        }
+//        Log.d(TAG, "setNavTip warn=" + warn);
+//        if (warn == 0) {
+//            nav_warn.setVisibility(View.GONE);
+//        } else {
+//            nav_warn.setVisibility(View.VISIBLE);
+//            nav_warn.setText(warn + " 种需要进货");
+//        }
+//
+//        nav_title.setText(getIpAddress() + "\n" + getBtAddressByReflection());
+//    }
 
 //    @Override
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -347,15 +385,15 @@ public class MainActivity extends BasicActivity
 
         uRecords.clear();
         mAdapter.notifyDataSetChanged();
-        if (isTablet) {
-            rg.check(R.id.main_cash);
-        } else {
-            sp.setSelection(0);
-        }
+//        if (isTablet) {
+//            rg.check(R.id.main_cash);
+//        } else {
+//            sp.setSelection(0);
+//        }
         tv_total.setText("合计：0.0");
         Snackbar.make(mRecyclerView, "结算成功", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-        setNavTip();
+//        setNavTip();
         if (cb.isChecked()) {
             PrintUtil.printStick(mGpService, sRecords);
             cb.setChecked(false);
@@ -556,12 +594,12 @@ public class MainActivity extends BasicActivity
             startActivity(new Intent(this, EnterActivity.class));
         } else if (id == R.id.nav_stock) {// 查看库存
             startActivity(new Intent(this, StoreActivity.class));
-        } else if (id == R.id.nav_enterList) {// 进货记录
-            startActivity(new Intent(this, EnterRecordActivity.class));
-        } else if (id == R.id.nav_statistics) {// 销售记录
-            startActivity(new Intent(this, StatisticsActivity.class));
-        } else if (id == R.id.nav_destory) {// 报损处理(自用、损坏或过期、退还商家)
-            startActivity(new Intent(this, DestoryActivity.class));
+//        } else if (id == R.id.nav_enterList) {// 进货记录
+//            startActivity(new Intent(this, EnterRecordActivity.class));
+//        } else if (id == R.id.nav_statistics) {// 销售记录
+//            startActivity(new Intent(this, StatisticsActivity.class));
+//        } else if (id == R.id.nav_destory) {// 报损处理(自用、损坏或过期、退还商家)
+//            startActivity(new Intent(this, DestoryActivity.class));
         } else if (id == R.id.nav_printer) {// 连接打印机
             if (mGpService == null) {
                 Toast.makeText(this, "Print Service is not start, please check it", Toast.LENGTH_SHORT).show();
@@ -797,56 +835,56 @@ public class MainActivity extends BasicActivity
         return state;
     }
 
-    private ApiController apiController;
+    //    private ApiController apiController;
     public static String result = "";
 
-    private BluetoothChatService bluetoothChatService;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case BluetoothChatService.BLUE_TOOTH_READ: {
-                    bluetoothChatService.sendData(apiController.getBluetoothResult(result).getBytes());
-                }
-                break;
-            }
-        }
-    };
-
-    /**
-     * 获取蓝牙地址
-     *
-     * @return
-     */
-    public String getBtAddressByReflection() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Field field = null;
-        try {
-            field = BluetoothAdapter.class.getDeclaredField("mService");
-            field.setAccessible(true);
-            Object bluetoothManagerService = field.get(bluetoothAdapter);
-            if (bluetoothManagerService == null) {
-                return null;
-            }
-            Method method = bluetoothManagerService.getClass().getMethod("getAddress");
-            if (method != null) {
-                Object obj = method.invoke(bluetoothManagerService);
-                if (obj != null) {
-                    return obj.toString();
-                }
-            }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    private BluetoothChatService bluetoothChatService;
+//    private Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case BluetoothChatService.BLUE_TOOTH_READ: {
+//                    bluetoothChatService.sendData(apiController.getBluetoothResult(result).getBytes());
+//                }
+//                break;
+//            }
+//        }
+//    };
+//
+//    /**
+//     * 获取蓝牙地址
+//     *
+//     * @return
+//     */
+//    public String getBtAddressByReflection() {
+//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        Field field = null;
+//        try {
+//            field = BluetoothAdapter.class.getDeclaredField("mService");
+//            field.setAccessible(true);
+//            Object bluetoothManagerService = field.get(bluetoothAdapter);
+//            if (bluetoothManagerService == null) {
+//                return "";
+//            }
+//            Method method = bluetoothManagerService.getClass().getMethod("getAddress");
+//            if (method != null) {
+//                Object obj = method.invoke(bluetoothManagerService);
+//                if (obj != null) {
+//                    return obj.toString();
+//                }
+//            }
+//        } catch (NoSuchFieldException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//        return "";
+//    }
 
     private ServerManager mServerManager;
     private String ipAddress;
@@ -859,6 +897,9 @@ public class MainActivity extends BasicActivity
             e.printStackTrace();
         }
 //        }
+        if (TextUtils.isEmpty(ipAddress)) {
+            ipAddress = "";
+        }
         Logger.d("ipAddress=" + ipAddress);
         return ipAddress;
     }
@@ -868,7 +909,7 @@ public class MainActivity extends BasicActivity
      */
     public void onServerStart(String ip) {
         ipAddress = ip;
-        Snackbar.make(mRecyclerView, getIpAddress(), Snackbar.LENGTH_LONG)
+        Snackbar.make(mRecyclerView, ip, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 
@@ -876,14 +917,11 @@ public class MainActivity extends BasicActivity
      * Error notify.
      */
     public void onServerError(String message) {
-
     }
 
     /**
      * Stop notify.
      */
     public void onServerStop() {
-
     }
-
 }

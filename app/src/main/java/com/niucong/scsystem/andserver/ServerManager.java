@@ -23,7 +23,7 @@ import android.content.IntentFilter;
 import com.niucong.scsystem.MainActivity;
 
 /**
- * Created by Yan Zhenjie on 2018/6/9.
+ * Created by Zhenjie Yan on 2018/6/9.
  */
 public class ServerManager extends BroadcastReceiver {
 

@@ -2,9 +2,10 @@ package com.niucong.scsystem;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
 
 public class AboutActivity extends BasicActivity {
 

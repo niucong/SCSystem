@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.niucong.scsystem.andserver.util.JsonUtils;
-import com.niucong.scsystem.andserver.util.Logger;
 import com.yanzhenjie.andserver.annotation.Converter;
 import com.yanzhenjie.andserver.framework.MessageConverter;
 import com.yanzhenjie.andserver.framework.body.JsonBody;
@@ -33,14 +32,13 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
- * Created by YanZhenjie on 2018/9/11.
+ * Created by Zhenjie Yan on 2018/9/11.
  */
 @Converter
 public class AppMessageConverter implements MessageConverter {
 
     @Override
     public ResponseBody convert(@NonNull Object output, @Nullable MediaType mediaType) {
-        Logger.d(output);
         return new JsonBody(JsonUtils.successfulJson(output));
     }
 

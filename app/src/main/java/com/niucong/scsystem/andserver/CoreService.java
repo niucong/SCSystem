@@ -18,7 +18,6 @@ package com.niucong.scsystem.andserver;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import com.niucong.scsystem.andserver.util.NetUtils;
 import com.yanzhenjie.andserver.AndServer;
@@ -27,7 +26,7 @@ import com.yanzhenjie.andserver.Server;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Yan Zhenjie on 2018/6/9.
+ * Created by Zhenjie Yan on 2018/6/9.
  */
 public class CoreService extends Service {
 
@@ -35,9 +34,9 @@ public class CoreService extends Service {
 
     @Override
     public void onCreate() {
-        mServer = AndServer.serverBuilder()
+        mServer = AndServer.serverBuilder(this)
                 .inetAddress(NetUtils.getLocalIPAddress())
-                .port(8080)
+                .port(8081)
                 .timeout(10, TimeUnit.SECONDS)
                 .listener(new Server.ServerListener() {
                     @Override
@@ -90,7 +89,6 @@ public class CoreService extends Service {
         mServer.shutdown();
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;

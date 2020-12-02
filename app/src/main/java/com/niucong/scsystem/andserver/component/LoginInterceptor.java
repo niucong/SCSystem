@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,10 @@ import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.session.Session;
 import com.yanzhenjie.andserver.mapping.Addition;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
- * Created by YanZhenjie on 2018/9/11.
+ * Created by Zhenjie Yan on 2018/9/11.
  */
 @Interceptor
 public class LoginInterceptor implements HandlerInterceptor {
@@ -39,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean onIntercept(@NonNull HttpRequest request, @NonNull HttpResponse response,
                                @NonNull RequestHandler handler) {
         if (handler instanceof MethodHandler) {
-            MethodHandler methodHandler = (MethodHandler) handler;
+            MethodHandler methodHandler = (MethodHandler)handler;
             Addition addition = methodHandler.getAddition();
             if (!isLogin(request, addition)) {
                 throw new BasicException(401, "You are not logged in yet.");
@@ -52,10 +54,10 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (addition == null) return false;
 
         String[] stringType = addition.getStringType();
-        if (stringType == null || stringType.length == 0) return false;
+        if (ArrayUtils.isEmpty(stringType)) return false;
 
         boolean[] booleanType = addition.getBooleanType();
-        if (booleanType == null || booleanType.length == 0) return false;
+        if (ArrayUtils.isEmpty(booleanType)) return false;
         return stringType[0].equalsIgnoreCase("login") && booleanType[0];
     }
 
@@ -64,7 +66,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             Session session = request.getSession();
             if (session != null) {
                 Object o = session.getAttribute(LOGIN_ATTRIBUTE);
-                return o != null && (o instanceof Boolean) && ((boolean) o);
+                return o != null && (o instanceof Boolean) && ((boolean)o);
             }
             return false;
         }

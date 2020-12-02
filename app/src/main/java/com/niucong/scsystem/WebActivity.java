@@ -1,9 +1,10 @@
 package com.niucong.scsystem;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import androidx.appcompat.widget.Toolbar;
 
 public class WebActivity extends BasicActivity {
 
