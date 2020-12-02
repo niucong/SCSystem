@@ -15,7 +15,7 @@
  */
 package com.niucong.scsystem.andserver.component;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.annotation.Interceptor;
 import com.yanzhenjie.andserver.error.BasicException;

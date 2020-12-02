@@ -15,7 +15,7 @@
  */
 package com.niucong.scsystem.andserver.component;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.niucong.scsystem.andserver.util.JsonUtils;
 import com.yanzhenjie.andserver.annotation.Resolver;
