@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -53,11 +55,13 @@ import com.niucong.scsystem.andserver.controller.ApiController;
 import com.niucong.scsystem.andserver.util.Logger;
 import com.niucong.scsystem.andserver.util.NetUtils;
 import com.niucong.scsystem.app.App;
+import com.niucong.scsystem.dao.DBUtil;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.niucong.scsystem.dao.SellRecord;
 import com.niucong.scsystem.dao.SellRecordDao;
 import com.niucong.scsystem.dao.StoreList;
 import com.niucong.scsystem.printer.PrinterConnectDialog;
+import com.niucong.scsystem.util.FileUtil;
 import com.niucong.scsystem.util.PrintUtil;
 import com.niucong.scsystem.view.DividerItemDecoration;
 
@@ -104,7 +108,15 @@ public class MainActivity extends BasicActivity
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-//        MobclickAgent.onEvent(this, "0");
+
+        Log.d(TAG, "onCreate isInit=" + App.app.share.getBooleanMessage("SC", "isInit", false));
+        if (!App.app.share.getBooleanMessage("SC", "isInit", false)) {
+            String dataPath = getDatabasePath(FileUtil.DATABASE_NAME).getPath();
+            boolean flag = FileUtil.copyDataBase(this, dataPath);
+            Log.d(TAG, "onCreate flag=" + flag + ",dataPath=" + dataPath);
+            Toast.makeText(this, flag ? "初始化数据成功" : "初始化数据失败", Toast.LENGTH_LONG).show();
+            App.app.share.saveBooleanMessage("SC", "isInit", true);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -147,6 +159,7 @@ public class MainActivity extends BasicActivity
 
         app.list = getDaoSession().getDrugInfoDao().loadAll();
         setSearchBar(this, true);
+        Log.d(TAG, "onCreate app.list=" + app.list.size());
 
         cb = (CheckBox) findViewById(R.id.main_print);
         cb.setVisibility(View.VISIBLE);

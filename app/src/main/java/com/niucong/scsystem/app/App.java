@@ -2,7 +2,6 @@ package com.niucong.scsystem.app;
 
 import android.app.Application;
 
-import com.facebook.stetho.Stetho;
 import com.niucong.scsystem.dao.DrugInfo;
 import com.umeng.analytics.MobclickAgent;
 
@@ -29,7 +28,7 @@ public class App extends Application {
 
         MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, "581bdb7fe88bad6afb00332c", ""));
 
-        Stetho.initializeWithDefaults(this);
+//        Stetho.initializeWithDefaults(this);
     }
 
     /**

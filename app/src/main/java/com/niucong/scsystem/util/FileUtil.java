@@ -14,6 +14,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -148,6 +149,46 @@ public class FileUtil {
             }
         }
         return false;
+    }
+
+    public static String DATABASE_NAME = "shunchang";
+
+    /**
+     * @return 复制数据库
+     */
+    public static boolean copyDataBase(Context ctx, String databaseFileName) {
+
+        File mPath = new File(databaseFileName);
+        if (!mPath.getParentFile().exists()) {
+            mPath.getParentFile().mkdir();
+        }
+
+        File mFile = new File(databaseFileName);
+        if (!mFile.exists()) {
+            try {
+                mFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        try {
+            FileOutputStream outputStream = new FileOutputStream(
+                    databaseFileName);
+            InputStream inputStream = ctx.getAssets().open(DATABASE_NAME);
+            byte[] buffer = new byte[10240];
+            int readlen = 0;
+            while ((readlen = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, readlen);
+            }
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
 }

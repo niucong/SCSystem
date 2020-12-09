@@ -93,7 +93,7 @@ public class AppSharedPreferences {
                                      boolean defaltValve) {
         @SuppressWarnings("deprecation")
         SharedPreferences preferences = this.context.getSharedPreferences(
-                fileName, Context.MODE_WORLD_READABLE);
+                fileName, Context.MODE_PRIVATE);
         boolean setup = preferences.getBoolean(key, defaltValve);
         return setup;
     }

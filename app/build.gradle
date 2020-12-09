@@ -14,8 +14,29 @@ android {
         manifestPlaceholders = ["UMENG_APPKEY": "581bdb7fe88bad6afb00332c"]
     }
 
+    signingConfigs {
+        release {
+            storeFile file('sc.jks')
+            storePassword "693623533"
+            keyAlias "sc"
+            keyPassword "693623533"
+        }
+        debug {
+            storeFile file('sc.jks')
+            storePassword "693623533"
+            keyAlias "sc"
+            keyPassword "693623533"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -46,7 +67,7 @@ dependencies {
 
     compile 'com.belerweb:pinyin4j:2.5.0'
 
-    implementation 'com.facebook.stetho:stetho:1.5.0'
+//    implementation 'com.facebook.stetho:stetho:1.5.0'
 
     implementation 'com.alibaba:fastjson:1.2.49'
     implementation 'com.yanzhenjie.andserver:api:2.0.2'
